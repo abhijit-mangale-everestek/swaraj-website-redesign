@@ -1,16 +1,84 @@
 ---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/layout/Hero.astro';
+import TrustBar from '../components/layout/TrustBar.astro';
+import ProductCategories from '../components/layout/ProductCategories.astro';
+import FeaturedProducts from '../components/layout/FeaturedProducts.astro';
+import WhySwaraj from '../components/layout/WhySwaraj.astro';
+import CaseStudyPreview from '../components/layout/CaseStudyPreview.astro';
+import CTABanner from '../components/layout/CTABanner.astro';
+import ProductVisual from '../components/ui/ProductVisual.astro';
+import Icon from '../components/ui/Icon.astro';
+import { company } from '../data/company';
 ---
 
-<html lang="en">
-	<head>
-		<meta charset="utf-8" />
-		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
-		<link rel="icon" href="/favicon.ico" />
-		<meta name="viewport" content="width=device-width" />
-		<meta name="generator" content={Astro.generator} />
-		<title>Astro</title>
-	</head>
-	<body>
-		<h1>Astro</h1>
-	</body>
-</html>
+<Base
+  description="Swaraj Engineering Corporation designs, manufactures and commissions EOT cranes, goliath cranes, jib cranes, wire rope hoists and custom lifting systems from Ambernath, Maharashtra."
+>
+  <Hero
+    eyebrow="Engineering since 2007 · Ambernath"
+    title="Heavy-duty cranes and hoists, "
+    accent="engineered to spec."
+    description="Overhead travelling cranes, gantry systems, jib cranes and wire rope hoists built for Indian production floors — designed around your span, headroom, duty cycle and site conditions."
+    primary={{ label: 'Request a quote', href: '/contact' }}
+    secondary={{ label: 'Explore the range', href: '/products' }}
+    note="ISO 9001:2015 certified · 500+ installations across India"
+    stats={company.stats.slice(0, 3).map((stat) => ({ value: stat.value, label: stat.label }))}
+  >
+    <div class="relative mx-auto w-full max-w-lg">
+      <div class="absolute -inset-3 rounded-2xl border border-white/10" aria-hidden="true"></div>
+
+      <div class="relative overflow-hidden rounded-xl border border-white/15 bg-brand-800 shadow-2xl">
+        <ProductVisual
+          category="goliath"
+          capacity="100 T · Goliath class"
+          tone="dark"
+          label="Yard gantry"
+          class="aspect-[4/3] w-full"
+        />
+        <div class="flex items-center justify-between gap-4 border-t border-white/10 bg-brand-900/80 px-4 py-3">
+          <div>
+            <p class="font-mono text-[9px] uppercase tracking-[0.16em] text-slate-400">Typical build</p>
+            <p class="mt-0.5 text-sm font-semibold text-white">Double girder goliath</p>
+          </div>
+          <span class="rounded-sm bg-emerald-400/10 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.12em] text-emerald-300 ring-1 ring-emerald-400/20">
+            Load tested
+          </span>
+        </div>
+      </div>
+
+      <div class="absolute -left-3 top-8 hidden items-center gap-3 rounded-lg border border-white/15 bg-brand-900/90 px-4 py-3 shadow-xl backdrop-blur-sm sm:flex">
+        <span class="flex h-9 w-9 items-center justify-center rounded-md bg-accent-400 text-brand-900">
+          <Icon name="shield" size={18} strokeWidth={2} />
+        </span>
+        <div>
+          <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">Design basis</p>
+          <p class="text-sm font-semibold text-white">IS 3177 · IS 807</p>
+        </div>
+      </div>
+
+      <div class="absolute -right-2 bottom-16 hidden rounded-lg border border-white/15 bg-white px-4 py-3 shadow-xl md:block">
+        <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">Commissioned</p>
+        <p class="mt-0.5 font-display text-lg font-bold tracking-tight text-ink">500+ units</p>
+        <p class="font-mono text-[9px] uppercase tracking-[0.1em] text-slate-400">since 2007</p>
+      </div>
+
+      <div class="absolute -bottom-4 left-6 flex items-center gap-2 rounded-full border border-white/15 bg-brand-900/90 px-3 py-1.5 backdrop-blur-sm">
+        <span class="h-1.5 w-1.5 animate-pulse rounded-full bg-success-500"></span>
+        <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-300">Manufacturing in Ambernath</span>
+      </div>
+    </div>
+  </Hero>
+
+  <TrustBar />
+
+  <ProductCategories />
+
+  <FeaturedProducts />
+
+  <WhySwaraj />
+
+  <CaseStudyPreview />
+
+  <CTABanner />
+</Base>

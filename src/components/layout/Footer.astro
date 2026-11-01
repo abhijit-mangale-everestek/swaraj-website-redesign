@@ -1,0 +1,115 @@
+---
+import Icon from '../ui/Icon.astro';
+import { company, navProducts, mainNav } from '../../data/company';
+
+const year = new Date().getFullYear();
+---
+
+<footer class="relative overflow-hidden bg-brand-900 text-slate-300">
+  <div class="absolute inset-0 grid-pattern opacity-40" aria-hidden="true"></div>
+  <div class="absolute -right-24 top-0 h-72 w-72 rounded-full bg-brand-500/20 blur-3xl" aria-hidden="true"></div>
+
+  <div class="container-page relative">
+    <div class="grid gap-12 py-16 lg:grid-cols-[1.4fr_1fr_1fr_1.2fr] lg:py-20">
+      <div>
+        <a href="/" class="flex items-center gap-3" aria-label={`${company.name} home`}>
+          <span class="flex h-11 w-11 items-center justify-center rounded-md bg-white/10 ring-1 ring-white/15">
+            <Icon name="crane" size={24} class="text-accent-400" />
+          </span>
+          <span class="flex flex-col">
+            <span class="font-display text-lg font-bold uppercase leading-none tracking-tight text-white">Swaraj</span>
+            <span class="mt-1 font-mono text-[12px] uppercase leading-none tracking-[0.22em] text-slate-400">
+              Engineering Corporation
+            </span>
+          </span>
+        </a>
+        <p class="mt-5 max-w-sm text-sm leading-relaxed text-slate-400">
+          Designing, manufacturing and commissioning heavy-duty cranes and hoists for Indian industry since 2007.
+        </p>
+        <div class="mt-6 flex flex-wrap gap-2">
+          {company.certifications.slice(0, 3).map((cert) => (
+            <span class="rounded-sm bg-white/5 px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-300 ring-1 ring-white/10">
+              {cert}
+            </span>
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h3 class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">Products</h3>
+        <ul class="mt-4 space-y-2">
+          {navProducts.map((product) => (
+            <li>
+              <a href={product.href} class="block py-3 text-sm text-slate-300 transition-colors hover:text-accent-400 min-h-[44px] flex items-center">
+                {product.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">Company</h3>
+        <ul class="mt-4 space-y-2">
+          {mainNav.map((item) => (
+            <li>
+              <a href={item.href} class="block py-3 text-sm text-slate-300 transition-colors hover:text-accent-400 min-h-[44px] flex items-center">
+                {item.label}
+              </a>
+            </li>
+          ))}
+          <li>
+            <a href="/contact" class="block py-3 text-sm text-slate-300 transition-colors hover:text-accent-400 min-h-[44px] flex items-center">
+              Request a quote
+            </a>
+          </li>
+        </ul>
+      </div>
+
+      <div>
+        <h3 class="font-mono text-[10px] uppercase tracking-[0.18em] text-slate-500">Works & office</h3>
+        <address class="mt-4 space-y-1 text-sm not-italic text-slate-400">
+          <p>{company.address.line1}</p>
+          <p>{company.address.line2}</p>
+          <p>{company.address.city}, {company.address.district}</p>
+          <p>{company.address.state} {company.address.pin}</p>
+        </address>
+        <div class="mt-4 space-y-2">
+          <a href={company.phoneHref} class="flex items-center gap-2 py-2.5 font-mono text-sm text-slate-300 transition-colors hover:text-accent-400 min-h-[44px]">
+            <Icon name="phone" size={14} class="text-accent-400 flex-shrink-0" />
+            {company.phone}
+          </a>
+          <a href={`mailto:${company.email}`} class="flex items-center gap-2 py-2.5 text-sm text-slate-300 transition-colors hover:text-accent-400 min-h-[44px]">
+            <Icon name="mail" size={14} class="text-accent-400 flex-shrink-0" />
+            {company.email}
+          </a>
+          <p class="flex items-center gap-2 py-2.5 text-sm text-slate-500 min-h-[44px]">
+            <Icon name="clock" size={14} class="flex-shrink-0" />
+            Mon – Sat, 9:00 AM – 6:30 PM
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <div class="flex flex-col gap-4 border-t border-white/10 py-6 text-sm text-slate-500 md:flex-row md:items-center md:justify-between">
+      <p>© {year} {company.name}. All rights reserved.</p>
+      <div class="flex flex-wrap items-center gap-x-5 gap-y-2 font-mono text-[11px] uppercase tracking-[0.12em]">
+        <span>GST {company.gst}</span>
+        <span class="hidden h-3 w-px bg-white/15 md:block"></span>
+        <span>Est. {company.founded}</span>
+        <span class="hidden h-3 w-px bg-white/15 md:block"></span>
+        <a href={`mailto:${company.email}`} class="py-2 transition-colors hover:text-accent-400 min-h-[44px] flex items-center">Sales enquiry</a>
+      </div>
+    </div>
+  </div>
+</footer>
+
+<a
+  href={company.whatsapp}
+  target="_blank"
+  rel="noopener noreferrer"
+  class="fixed bottom-5 right-5 z-40 flex h-12 w-12 items-center justify-center rounded-full bg-[#25D366] text-white shadow-lg transition-transform duration-200 hover:scale-105 focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-offset-2"
+  aria-label="Chat with Swaraj on WhatsApp"
+>
+  <Icon name="whatsapp" size={22} strokeWidth={1.5} />
+</a>

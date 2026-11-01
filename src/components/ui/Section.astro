@@ -1,0 +1,10 @@
+---
+import Section from '../layout/Section.astro';
+
+const props = Astro.props;
+---
+
+<Section {...props}>
+  <slot />
+  <slot name="actions" slot="actions" />
+</Section>

@@ -1,0 +1,91 @@
+---
+import ProductVisual from '../ui/ProductVisual.astro';
+import Icon from '../ui/Icon.astro';
+
+interface Props {
+  category: string;
+  title: string;
+  capacity: string;
+  sticky?: boolean;
+}
+
+const { category, title, capacity, sticky = true } = Astro.props;
+
+const views = [
+  { tone: 'dark' as const, label: 'Overall' },
+  { tone: 'blueprint' as const, label: 'General arrangement' },
+  { tone: 'light' as const, label: 'Drive detail' },
+  { tone: 'accent' as const, label: 'Lifting detail' },
+];
+---
+
+<div class:list={['space-y-3', sticky ? 'lg:sticky lg:top-28' : '']} data-gallery>
+  <div class="relative overflow-hidden rounded-xl border border-border bg-brand-900 shadow-lg">
+    {views.map((view, index) => (
+      <div
+        class:list={['transition-opacity duration-300', index === 0 ? '' : 'hidden']}
+        data-gallery-panel
+        data-index={index}
+      >
+        <ProductVisual
+          category={category}
+          capacity={capacity}
+          tone={view.tone}
+          label={view.label}
+          class="aspect-[4/3] w-full"
+        />
+      </div>
+    ))}
+    <div class="pointer-events-none absolute right-4 top-4 flex items-center gap-1.5 rounded-sm bg-black/30 px-2 py-1 font-mono text-[9px] uppercase tracking-[0.14em] text-white/80 backdrop-blur-sm">
+      <Icon name="search" size={11} />
+      Illustrative view
+    </div>
+  </div>
+
+  <div class="grid grid-cols-4 gap-2" role="group" aria-label="Product gallery views">
+    {views.map((view, index) => (
+      <button
+        type="button"
+        class:list={[
+          'overflow-hidden rounded-md border-2 transition-all duration-150',
+          index === 0 ? 'border-brand-500' : 'border-transparent opacity-70 hover:opacity-100',
+        ]}
+        aria-label={`Show ${view.label} view`}
+        aria-pressed={index === 0 ? 'true' : 'false'}
+        data-gallery-thumb
+        data-index={index}
+      >
+        <ProductVisual category={category} tone={view.tone} class="aspect-[4/3] w-full" />
+      </button>
+    ))}
+  </div>
+
+  <p class="text-center font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+    {title} · Illustrative general arrangement
+  </p>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-gallery]').forEach((gallery) => {
+    const panels = gallery.querySelectorAll<HTMLElement>('[data-gallery-panel]');
+    const thumbs = gallery.querySelectorAll<HTMLButtonElement>('[data-gallery-thumb]');
+
+    const select = (index: number) => {
+      panels.forEach((panel, i) => panel.classList.toggle('hidden', i !== index));
+      thumbs.forEach((thumb, i) => {
+        const active = i === index;
+        thumb.classList.toggle('border-brand-500', active);
+        thumb.classList.toggle('border-transparent', !active);
+        thumb.classList.toggle('opacity-70', !active);
+        thumb.setAttribute('aria-pressed', String(active));
+      });
+    };
+
+    thumbs.forEach((thumb) => {
+      thumb.addEventListener('click', () => {
+        const index = Number(thumb.dataset.index ?? 0);
+        select(index);
+      });
+    });
+  });
+</script>

@@ -1,0 +1,63 @@
+---
+import Section from '../ui/Section.astro';
+import ProductCard from '../product/ProductCard.astro';
+import Icon from '../ui/Icon.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const products = await getCollection('products');
+const featured = products
+  .filter((product) => product.data.isFeatured)
+  .sort((a, b) => a.data.order - b.data.order)
+  .slice(0, 3);
+
+const fallback = products
+  .sort((a, b) => a.data.order - b.data.order)
+  .filter((product) => !featured.some((item) => item.id === product.id));
+
+const selected = [...featured, ...fallback].slice(0, 3);
+---
+
+<Section
+  eyebrow="Selected equipment"
+  title="Proven systems, ready to configure"
+  description="A cross-section of our most requested builds. Every unit is engineered to order with the same structural, electrical and safety documentation."
+  class:list={['bg-bg-muted', className]}
+>
+  <div class="mb-8 flex items-center justify-between gap-4">
+    <p class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.14em] text-text-muted">
+      <span class="h-1.5 w-1.5 rounded-full bg-success-500"></span>
+      Load-tested before dispatch
+    </p>
+    <a
+      href="/products"
+      class="hidden items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-brand-500 transition-colors hover:text-brand-600 sm:flex"
+    >
+      View full range
+      <Icon name="arrow-right" size={14} />
+    </a>
+  </div>
+
+  <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+    {selected.map((product, index) => (
+      <div data-reveal style={`transition-delay:${index * 60}ms`}>
+        <ProductCard product={product} class="h-full" />
+      </div>
+    ))}
+  </div>
+
+  <div class="mt-10 flex justify-center sm:hidden">
+    <a
+      href="/products"
+      class="flex items-center gap-2 rounded-md border border-border-strong bg-white px-5 py-3 font-mono text-[11px] uppercase tracking-[0.12em] text-brand-500 shadow-sm"
+    >
+      View full range
+      <Icon name="arrow-right" size={14} />
+    </a>
+  </div>
+</Section>

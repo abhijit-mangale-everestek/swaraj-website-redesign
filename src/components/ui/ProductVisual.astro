@@ -1,0 +1,209 @@
+---
+interface Props {
+  category: string;
+  capacity?: string;
+  tone?: 'dark' | 'blueprint' | 'light' | 'accent';
+  label?: string;
+  class?: string;
+}
+
+const { category, capacity, tone = 'dark', label, class: className = '' } = Astro.props;
+
+const tones: Record<string, string> = {
+  dark: 'bg-gradient-to-br from-brand-800 via-brand-900 to-brand-900 text-brand-300',
+  blueprint: 'bg-brand-50 text-brand-500',
+  light: 'bg-slate-100 text-slate-400',
+  accent: 'bg-accent-400 text-brand-900',
+};
+
+const gridClass = tone === 'blueprint' ? 'grid-pattern-light' : tone === 'accent' ? '' : 'grid-pattern';
+
+const art: Record<string, string> = {
+  eot: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <path d="M38 240h324" stroke-dasharray="2 6" opacity="0.4"/>
+      <rect x="52" y="208" width="42" height="24" rx="2" fill="currentColor" fill-opacity="0.12"/>
+      <rect x="306" y="208" width="42" height="24" rx="2" fill="currentColor" fill-opacity="0.12"/>
+      <circle cx="62" cy="236" r="6"/><circle cx="84" cy="236" r="6"/>
+      <circle cx="316" cy="236" r="6"/><circle cx="338" cy="236" r="6"/>
+      <rect x="46" y="170" width="308" height="22" rx="2" fill="currentColor" fill-opacity="0.08"/>
+      <path d="M46 181h308"/>
+      <path d="M64 170v22M84 170v22M104 170v22M124 170v22M144 170v22M164 170v22M184 170v22M204 170v22M224 170v22M244 170v22M264 170v22M284 170v22M304 170v22M324 170v22M344 170v22" opacity="0.28"/>
+      <rect x="170" y="146" width="64" height="26" rx="2" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M180 146v-10h44v10"/>
+      <path d="M202 172v28"/>
+      <path d="M194 200h16l-4 10h-8l-4-10z" fill="currentColor" fill-opacity="0.9"/>
+      <path d="M202 210v10a8 8 0 1 0 8 8" fill="none"/>
+      <path d="M378 170v66M46 170v66" opacity="0.3" stroke-dasharray="3 5"/>
+      <path d="M46 158v-8h308v8" opacity="0.35"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="186" y="138">TROLLEY</text>
+      <text x="186" y="258">HOOK BLOCK</text>
+      <text x="60" y="130">BRIDGE GIRDER</text>
+    </g>
+  `,
+  goliath: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <path d="M20 250h360" stroke-dasharray="2 6" opacity="0.4"/>
+      <path d="M58 250V108M342 250V108"/>
+      <path d="M58 234h-14M342 234h14" opacity="0.5"/>
+      <path d="M58 120l-20 0M58 160l-16 0M58 200l-12 0M342 120l20 0M342 160l16 0M342 200l12 0" opacity="0.35"/>
+      <rect x="38" y="88" width="324" height="24" rx="2" fill="currentColor" fill-opacity="0.12"/>
+      <path d="M38 100h324"/>
+      <path d="M38 88 66 112M86 88l28 24M134 88l28 24M182 88l28 24M230 88l28 24M278 88l28 24M326 88l28 24" opacity="0.3"/>
+      <path d="M58 250h-16M342 250h16" stroke-width="3"/>
+      <rect x="58" y="240" width="34" height="16" rx="2" fill="currentColor" fill-opacity="0.2"/>
+      <rect x="308" y="240" width="34" height="16" rx="2" fill="currentColor" fill-opacity="0.2"/>
+      <circle cx="66" cy="256" r="7"/><circle cx="84" cy="256" r="7"/>
+      <circle cx="316" cy="256" r="7"/><circle cx="334" cy="256" r="7"/>
+      <rect x="172" y="64" width="56" height="24" rx="2" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M200 112v34"/>
+      <path d="M192 146h16l-4 10h-8l-4-10z" fill="currentColor" fill-opacity="0.9"/>
+      <path d="M200 156v8a8 8 0 1 0 8 8"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="46" y="80">TOP GIRDER</text>
+      <text x="50" y="278">RAIL MOUNTED LEGS</text>
+    </g>
+  `,
+  jib: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <path d="M28 252h344" stroke-dasharray="2 6" opacity="0.4"/>
+      <path d="M96 252V62" stroke-width="3"/>
+      <rect x="78" y="244" width="36" height="12" rx="2" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M96 84h214"/>
+      <path d="M96 62 198 84" opacity="0.45"/>
+      <path d="M96 62v22" opacity="0.45"/>
+      <path d="M96 150l52 26" opacity="0.18"/>
+      <rect x="214" y="70" width="42" height="26" rx="2" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M235 96v34"/>
+      <path d="M227 130h16l-4 10h-8l-4-10z" fill="currentColor" fill-opacity="0.9"/>
+      <path d="M235 140v8a8 8 0 1 0 8 8"/>
+      <path d="M262 110v142M310 110v142" opacity="0.25" stroke-dasharray="3 5"/>
+      <path d="M262 110h48" opacity="0.25" stroke-dasharray="3 5"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="86" y="290">PILLAR</text>
+      <text x="196" y="150">JIB ARM</text>
+      <text x="204" y="52">SLEWING HOIST</text>
+    </g>
+  `,
+  hoist: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <path d="M40 74h320" opacity="0.4"/>
+      <path d="M60 74v-12h280v12" opacity="0.4"/>
+      <rect x="120" y="88" width="160" height="96" rx="4" fill="currentColor" fill-opacity="0.12"/>
+      <circle cx="158" cy="136" r="26"/>
+      <circle cx="158" cy="136" r="10" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M184 122h64v28h-64z" fill="currentColor" fill-opacity="0.08"/>
+      <path d="M198 122v28M214 122v28M230 122v28" opacity="0.35"/>
+      <path d="M158 162v-8M186 136h-10" opacity="0.4"/>
+      <path d="M210 184v44"/>
+      <path d="M202 228h16l-4 10h-8l-4-10z" fill="currentColor" fill-opacity="0.9"/>
+      <path d="M210 238v8a8 8 0 1 0 8 8"/>
+      <path d="M280 136h22M302 124v24" opacity="0.35"/>
+      <path d="M90 96v80" opacity="0.25" stroke-dasharray="3 5"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="126" y="80">MONORAIL BEAM</text>
+      <text x="196" y="200">ROPE DRUM</text>
+      <text x="292" y="140">MOTOR</text>
+    </g>
+  `,
+  component: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <circle cx="118" cy="190" r="36"/>
+      <circle cx="118" cy="190" r="12" fill="currentColor" fill-opacity="0.25"/>
+      <circle cx="272" cy="190" r="36"/>
+      <circle cx="272" cy="190" r="12" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M118 154v72M82 190h72M272 154v72M236 190h72" opacity="0.25"/>
+      <rect x="120" y="146" width="150" height="34" rx="3" fill="currentColor" fill-opacity="0.12"/>
+      <path d="M120 163h150"/>
+      <rect x="150" y="100" width="44" height="46" rx="3" fill="currentColor" fill-opacity="0.2"/>
+      <path d="M172 100v46M150 123h44" opacity="0.4"/>
+      <path d="M194 112h34v22h-34z" fill="currentColor" fill-opacity="0.1"/>
+      <path d="M228 123h30" opacity="0.5"/>
+      <circle cx="264" cy="123" r="12"/>
+      <path d="M264 111v24M252 123h24" opacity="0.5"/>
+      <path d="M52 258h296" opacity="0.35"/>
+      <path d="M52 250v16M348 250v16M52 258h296" opacity="0.35"/>
+      <path d="M120 210v48M272 210v48" opacity="0.2" stroke-dasharray="3 5"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="92" y="282">WHEEL BLOCK</text>
+      <text x="150" y="92">GEARBOX</text>
+      <text x="248" y="92">DRIVE</text>
+    </g>
+  `,
+  custom: `
+    <g stroke="currentColor" stroke-width="1.4" opacity="0.85">
+      <path d="M20 252h360" stroke-dasharray="2 6" opacity="0.4"/>
+      <path d="M72 252V94" stroke-width="3"/>
+      <path d="M72 252h-20M72 252h20" stroke-width="3"/>
+      <path d="M72 116h230"/>
+      <path d="M72 94 140 116" opacity="0.45"/>
+      <path d="M302 116v136" stroke-width="3"/>
+      <path d="M302 252h-20M302 252h20" stroke-width="3"/>
+      <path d="M72 150 190 116M190 116l112 0" opacity="0.3"/>
+      <rect x="170" y="102" width="54" height="24" rx="2" fill="currentColor" fill-opacity="0.25"/>
+      <path d="M197 126v30"/>
+      <path d="M189 156h16l-4 10h-8l-4-10z" fill="currentColor" fill-opacity="0.9"/>
+      <path d="M197 166v8a8 8 0 1 0 8 8"/>
+      <path d="M72 200h92" opacity="0.2" stroke-dasharray="3 5"/>
+      <path d="M244 200h58" opacity="0.2" stroke-dasharray="3 5"/>
+    </g>
+    <g fill="currentColor" font-family="ui-monospace, monospace" font-size="8" letter-spacing="1.6" opacity="0.6">
+      <text x="56" y="286">ONE SIDE LEG</text>
+      <text x="176" y="88">CUSTOM SPAN</text>
+    </g>
+  `,
+};
+
+const artContent = art[category] ?? art.custom;
+---
+
+<div class:list={['relative overflow-hidden', tones[tone], className]}>
+  <div class:list={['absolute inset-0 opacity-70', gridClass]} aria-hidden="true"></div>
+  <div
+    class:list={[
+      'absolute -right-12 -top-12 h-44 w-44 rounded-full blur-3xl',
+      tone === 'accent' ? 'bg-white/30' : tone === 'blueprint' ? 'bg-brand-400/25' : 'bg-accent-400/15',
+    ]}
+    aria-hidden="true"
+  >
+  </div>
+  <svg
+    viewBox="0 0 400 300"
+    class="relative h-full w-full"
+    fill="none"
+    aria-hidden="true"
+    role="presentation"
+    set:html={artContent}
+  >
+  </svg>
+  {label && (
+    <span
+      class:list={[
+        'absolute left-4 top-4 rounded-sm border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.18em] backdrop-blur-sm',
+        tone === 'accent'
+          ? 'border-brand-900/20 bg-white/20 text-brand-900'
+          : tone === 'blueprint'
+            ? 'border-brand-500/20 bg-white/60 text-brand-600'
+            : 'border-white/20 bg-white/10 text-white/80',
+      ]}
+    >
+      {label}
+    </span>
+  )}
+  {capacity && (
+    <span
+      class:list={[
+        'absolute bottom-4 left-4 font-mono text-xs uppercase tracking-[0.16em]',
+        tone === 'accent' ? 'text-brand-900/80' : tone === 'blueprint' ? 'text-brand-600/80' : 'text-white/70',
+      ]}
+    >
+      {capacity}
+    </span>
+  )}
+</div>

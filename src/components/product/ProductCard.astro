@@ -1,0 +1,75 @@
+---
+import ProductVisual from '../ui/ProductVisual.astro';
+import Icon from '../ui/Icon.astro';
+import Badge from '../ui/Badge.astro';
+import { categoryLabels } from '../../data/company';
+
+interface Props {
+  product: {
+    id: string;
+    data: {
+      title: string;
+      category: string;
+      shortDescription: string;
+      specs: { capacity: string; span?: string };
+      isNew?: boolean;
+      isFeatured?: boolean;
+      leadTime?: string;
+      sku?: string;
+    };
+  };
+  class?: string;
+}
+
+const { product, class: className = '' } = Astro.props;
+const { data } = product;
+const category = categoryLabels[data.category] ?? data.category;
+---
+
+<article
+  class:list={[
+    'group relative flex h-full flex-col overflow-hidden rounded-xl border border-border bg-white shadow-sm transition-all duration-300 ease-industrial hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg',
+    className,
+  ]}
+>
+  <a href={`/products/${product.id}`} class="flex h-full flex-col" aria-label={`${data.title} details`}>
+    <div class="relative overflow-hidden">
+      <ProductVisual
+        category={data.category}
+        capacity={data.specs.capacity}
+        tone="dark"
+        class="aspect-[4/3] w-full transition-transform duration-500 ease-industrial group-hover:scale-[1.03]"
+      />
+      <div class="absolute right-3 top-3 flex flex-col items-end gap-1.5">
+        {data.isNew && <Badge variant="accent" class="bg-accent-400 text-brand-900 ring-0">New</Badge>}
+        {data.isFeatured && !data.isNew && <Badge variant="dark">Featured</Badge>}
+      </div>
+    </div>
+
+    <div class="flex flex-1 flex-col p-5">
+      <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-brand-500">{category}</p>
+      <h3 class="mt-2 font-display text-lg font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-brand-500">
+        {data.title}
+      </h3>
+      <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-text-muted">{data.shortDescription}</p>
+
+      <dl class="mt-5 grid grid-cols-2 gap-3 border-t border-border pt-4">
+        <div>
+          <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">Capacity</dt>
+          <dd class="mt-1 font-mono text-sm font-medium text-ink">{data.specs.capacity}</dd>
+        </div>
+        <div>
+          <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">Span</dt>
+          <dd class="mt-1 font-mono text-sm font-medium text-ink">{data.specs.span ?? 'Custom'}</dd>
+        </div>
+      </dl>
+
+      <div class="mt-auto flex items-center justify-between pt-5">
+        <span class="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">{data.leadTime}</span>
+        <span class="flex h-8 w-8 items-center justify-center rounded-full border border-border text-text-muted transition-all duration-200 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
+          <Icon name="arrow-right" size={15} />
+        </span>
+      </div>
+    </div>
+  </a>
+</article>

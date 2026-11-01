@@ -1,0 +1,122 @@
+---
+import Section from '../ui/Section.astro';
+import Icon from '../ui/Icon.astro';
+import Badge from '../ui/Badge.astro';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const studies = await getCollection('case-studies');
+
+const ordered = studies.sort((a, b) => {
+  if (a.data.featured !== b.data.featured) return a.data.featured ? -1 : 1;
+  if (a.data.order !== b.data.order) return a.data.order - b.data.order;
+  return b.data.date.getTime() - a.data.date.getTime();
+});
+
+const [featured, ...rest] = ordered;
+const secondary = rest.slice(0, 2);
+---
+
+{featured && (
+  <Section
+    eyebrow="Case studies"
+    title="Lifting problems, solved on site"
+    description="Real installations, measured outcomes. Each project starts with a constraint — headroom, foundations, duty cycle or schedule — and ends with a documented handover."
+    class:list={['bg-bg-muted', className]}
+  >
+    <div class="grid gap-4 lg:grid-cols-[1.55fr_1fr]">
+      <article class="relative overflow-hidden rounded-xl border border-border bg-white shadow-sm" data-reveal>
+        <div class="flex flex-wrap items-center gap-2 border-b border-border px-6 py-4">
+          <Badge variant="accent" class="bg-accent-400/20 text-accent-700 ring-accent-400/40">Featured</Badge>
+          <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">{featured.data.industry}</span>
+          <span class="h-3 w-px bg-border"></span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">{featured.data.location}</span>
+        </div>
+
+        <div class="p-6 md:p-8">
+          <h3 class="max-w-xl font-display text-xl font-bold leading-snug tracking-tight text-ink md:text-2xl">
+            <a href={`/case-studies#${featured.id}`} class="transition-colors hover:text-brand-500">
+              {featured.data.title}
+            </a>
+          </h3>
+          <p class="mt-4 max-w-2xl text-sm leading-relaxed text-text-muted">{featured.data.challenge}</p>
+
+          {featured.data.metrics.length > 0 && (
+            <dl class="mt-6 grid grid-cols-2 gap-px overflow-hidden rounded-lg bg-border sm:grid-cols-3">
+              {featured.data.metrics.slice(0, 3).map((metric) => (
+                <div class="bg-bg-muted px-4 py-4">
+                  <dt class="font-mono text-[9px] uppercase tracking-[0.12em] text-text-muted">{metric.label}</dt>
+                  <dd class="mt-1 font-display text-xl font-bold tracking-tight text-ink">{metric.value}</dd>
+                </div>
+              ))}
+            </dl>
+          )}
+
+          {featured.data.testimonial && (
+            <blockquote class="relative mt-6 rounded-lg border border-border bg-white px-5 py-5">
+              <Icon name="quote" size={20} class="text-accent-500" />
+              <p class="mt-2 text-sm italic leading-relaxed text-slate-600">“{featured.data.testimonial.quote}”</p>
+              <footer class="mt-3 flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+                <span class="h-px w-5 bg-border-strong"></span>
+                {featured.data.testimonial.author} · {featured.data.testimonial.role}
+              </footer>
+            </blockquote>
+          )}
+
+          <a
+            href={`/case-studies#${featured.id}`}
+            class="mt-6 inline-flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-brand-500 transition-colors hover:text-brand-600"
+          >
+            Read the project
+            <Icon name="arrow-right" size={14} />
+          </a>
+        </div>
+      </article>
+
+      <div class="flex flex-col gap-4">
+        {secondary.map((study, index) => (
+          <article
+            class="group flex flex-1 flex-col justify-between rounded-xl border border-border bg-white p-6 shadow-sm transition-all duration-300 ease-industrial hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg"
+            data-reveal
+            style={`transition-delay:${index * 60}ms`}
+          >
+            <div>
+              <div class="flex items-center justify-between gap-3">
+                <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-brand-500">{study.data.industry}</span>
+                <span class="font-mono text-[10px] uppercase tracking-[0.1em] text-border-strong">{study.data.location}</span>
+              </div>
+              <h3 class="mt-3 font-display text-base font-bold leading-snug tracking-tight text-ink transition-colors group-hover:text-brand-500">
+                <a href={`/case-studies#${study.id}`}>{study.data.title}</a>
+              </h3>
+              <p class="mt-2 line-clamp-2 text-sm leading-relaxed text-text-muted">{study.data.outcome}</p>
+            </div>
+            <div class="mt-5 flex items-center justify-between border-t border-border pt-4">
+              <span class="font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+                {study.data.productLabel}
+              </span>
+              <span class="flex h-7 w-7 items-center justify-center rounded-full border border-border text-text-muted transition-all duration-200 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
+                <Icon name="arrow-right" size={13} />
+              </span>
+            </div>
+          </article>
+        ))}
+
+        <a
+          href="/contact"
+          class="flex items-center justify-between gap-3 rounded-xl border border-dashed border-border-strong bg-white/60 px-6 py-5 transition-colors hover:border-brand-400 hover:bg-white"
+        >
+          <div>
+            <p class="text-sm font-semibold text-ink">Have a similar constraint?</p>
+            <p class="mt-0.5 text-xs text-text-muted">Share the site details and we will scope it.</p>
+          </div>
+          <Icon name="arrow-up-right" size={16} class="shrink-0 text-brand-500" />
+        </a>
+      </div>
+    </div>
+  </Section>
+)}

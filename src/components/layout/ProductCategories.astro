@@ -1,0 +1,79 @@
+---
+import Section from '../ui/Section.astro';
+import Icon from '../ui/Icon.astro';
+import { productCategories } from '../../data/company';
+import { getCollection } from 'astro:content';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const products = await getCollection('products');
+const counts = products.reduce<Record<string, number>>((acc, product) => {
+  acc[product.data.category] = (acc[product.data.category] ?? 0) + 1;
+  return acc;
+}, {});
+
+const categories = productCategories.map((category) => ({
+  ...category,
+  count: counts[category.slug] ?? 0,
+}));
+---
+
+<Section
+  id="products"
+  eyebrow="Product range"
+  title="Lifting equipment built around your bay"
+  description="Six families of cranes, hoists and components — each configured to your span, lift height, duty class and site conditions rather than sold from a shelf."
+  class={className}
+>
+  <div class="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+    {categories.map((category, index) => (
+      <a
+        href={`/products?category=${category.slug}`}
+        class="group relative flex flex-col overflow-hidden rounded-xl border border-border bg-white p-6 shadow-sm transition-all duration-300 ease-industrial hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg"
+        data-reveal
+        style={`transition-delay:${index * 40}ms`}
+      >
+        <div class="flex items-start justify-between gap-4">
+          <span class="flex h-12 w-12 items-center justify-center rounded-lg bg-brand-50 text-brand-500 transition-colors duration-300 group-hover:bg-brand-500 group-hover:text-white">
+            <Icon name={category.icon} size={24} strokeWidth={1.5} />
+          </span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-border-strong">
+            {category.capacity}
+          </span>
+        </div>
+
+        <h3 class="mt-5 font-display text-lg font-bold tracking-tight text-ink transition-colors group-hover:text-brand-500">
+          {category.label}
+        </h3>
+        <p class="mt-2 flex-1 text-sm leading-relaxed text-text-muted">{category.description}</p>
+
+        <div class="mt-6 flex items-center justify-between border-t border-border pt-4">
+          <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">
+            {category.count > 0 ? `${category.count} model${category.count === 1 ? '' : 's'}` : 'Engineered to order'}
+          </span>
+          <span class="flex h-8 w-8 items-center justify-center rounded-full border border-border text-text-muted transition-all duration-200 group-hover:border-brand-500 group-hover:bg-brand-500 group-hover:text-white">
+            <Icon name="arrow-right" size={15} />
+          </span>
+        </div>
+      </a>
+    ))}
+  </div>
+
+  <div class="mt-8 flex flex-col items-start justify-between gap-4 rounded-xl border border-border bg-bg-muted px-6 py-5 sm:flex-row sm:items-center">
+    <p class="flex items-center gap-3 text-sm text-text-muted">
+      <Icon name="custom" size={18} class="shrink-0 text-brand-500" />
+      Not sure which category fits? Send us the load, span and site photos.
+    </p>
+    <a
+      href="/contact"
+      class="flex items-center gap-2 font-mono text-[11px] uppercase tracking-[0.12em] text-brand-500 transition-colors hover:text-brand-600"
+    >
+      Talk to an engineer
+      <Icon name="arrow-up-right" size={14} />
+    </a>
+  </div>
+</Section>

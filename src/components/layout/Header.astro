@@ -1,0 +1,264 @@
+---
+import Icon from '../ui/Icon.astro';
+import Button from '../ui/Button.astro';
+import { company, mainNav, navProducts } from '../../data/company';
+
+const pathname = Astro.url.pathname;
+
+const isActive = (href: string) => {
+  if (href.startsWith('/#')) return false;
+  if (href === '/') return pathname === '/';
+  return pathname === href || pathname.startsWith(`${href}/`);
+};
+---
+
+<header class="sticky top-0 z-50" data-header>
+  <div class="hidden bg-brand-900 text-slate-300 md:block">
+    <div class="container-page flex h-8 items-center justify-between gap-6 font-mono text-[10px] uppercase tracking-[0.14em]">
+      <p class="flex items-center gap-2">
+        <span class="h-1.5 w-1.5 rounded-full bg-accent-400"></span>
+        ISO 9001:2015 certified manufacturer · Ambernath, Maharashtra
+      </p>
+      <div class="flex items-center gap-5">
+        <span class="text-slate-400">GST {company.gst}</span>
+        <a href={company.phoneHref} class="flex items-center gap-1.5 text-slate-200 transition-colors hover:text-accent-400">
+          <Icon name="phone" size={12} />
+          {company.phone}
+        </a>
+      </div>
+    </div>
+  </div>
+
+  <div class="border-b border-border bg-white/95 backdrop-blur-md transition-shadow duration-300" data-header-bar>
+    <div class="container-page flex h-[var(--header-height)] items-center justify-between gap-6">
+      <a href="/" class="group flex items-center gap-3 min-h-[44px]" aria-label={`${company.name} home`}>
+        <span class="flex h-10 w-10 items-center justify-center rounded-md bg-brand-900 shadow-sm transition-colors duration-300 group-hover:bg-brand-500 flex-shrink-0">
+          <Icon name="crane" size={22} class="text-accent-400" strokeWidth={1.7} />
+        </span>
+        <span class="flex flex-col justify-center min-h-[44px]">
+          <span class="font-display text-[1.15rem] font-bold uppercase leading-none tracking-tight text-ink">Swaraj</span>
+          <span class="mt-1 font-mono text-[12px] uppercase leading-none tracking-[0.22em] text-text-muted">
+            Engineering Corporation
+          </span>
+        </span>
+      </a>
+
+      <nav class="hidden items-center gap-1 lg:flex" aria-label="Main navigation">
+        {mainNav.map((item) =>
+          item.hasMenu ? (
+            <div class="relative" data-dropdown>
+              <button
+                type="button"
+                class:list={[
+                  'flex h-9 items-center gap-1.5 rounded-md px-3 text-sm font-medium transition-colors',
+                  isActive(item.href) ? 'text-brand-500' : 'text-slate-700 hover:bg-bg-muted hover:text-ink',
+                ]}
+                aria-expanded="false"
+                aria-controls="products-menu"
+                data-dropdown-toggle
+              >
+                {item.label}
+                <Icon name="chevron-down" size={14} class="transition-transform duration-200" data-chevron />
+              </button>
+              <div
+                id="products-menu"
+                class="invisible absolute left-1/2 top-full w-[38rem] -translate-x-1/2 translate-y-2 pt-3 opacity-0 transition-all duration-200 ease-industrial"
+                data-dropdown-panel
+              >
+                <div class="overflow-hidden rounded-lg border border-border bg-white shadow-xl">
+                  <div class="grid grid-cols-2 gap-1 p-2">
+                    {navProducts.map((product) => (
+                      <a
+                        href={product.href}
+                        class="group/item rounded-md p-3 transition-colors hover:bg-bg-muted"
+                      >
+                        <span class="flex items-center justify-between gap-2 text-sm font-semibold text-ink">
+                          {product.label}
+                          <Icon
+                            name="arrow-up-right"
+                            size={14}
+                            class="text-border-strong transition-all duration-200 group-hover/item:translate-x-0.5 group-hover/item:-translate-y-0.5 group-hover/item:text-brand-500"
+                          />
+                        </span>
+                        <span class="mt-1 block text-xs leading-relaxed text-text-muted">{product.description}</span>
+                      </a>
+                    ))}
+                  </div>
+                  <a
+                    href="/products"
+                    class="flex items-center justify-between gap-2 border-t border-border bg-bg-muted px-5 py-3 text-sm font-medium text-brand-500 transition-colors hover:bg-brand-50"
+                  >
+                    View all products
+                    <Icon name="arrow-right" size={15} />
+                  </a>
+                </div>
+              </div>
+            </div>
+          ) : (
+            <a
+              href={item.href}
+              class:list={[
+                'flex h-9 items-center rounded-md px-3 text-sm font-medium transition-colors',
+                isActive(item.href) ? 'text-brand-500' : 'text-slate-700 hover:bg-bg-muted hover:text-ink',
+              ]}
+            >
+              {item.label}
+            </a>
+          )
+        )}
+      </nav>
+
+      <div class="flex items-center gap-2.5">
+        <a
+          href={company.phoneHref}
+          class="hidden items-center gap-2 rounded-md px-3 py-2 font-mono text-xs text-text-muted transition-colors hover:text-brand-500 xl:flex"
+        >
+          <span class="flex h-7 w-7 items-center justify-center rounded-full bg-brand-50 text-brand-500">
+            <Icon name="phone" size={13} />
+          </span>
+          {company.phone}
+        </a>
+        <Button href="/contact" size="md" class="hidden sm:inline-flex min-h-[44px]">Get a quote</Button>
+        <button
+          type="button"
+          class="flex h-11 w-11 items-center justify-center rounded-md border border-border text-ink transition-colors hover:bg-bg-muted lg:hidden"
+          aria-label="Open menu"
+          aria-expanded="false"
+          aria-controls="mobile-menu"
+          data-menu-toggle
+        >
+          <Icon name="menu" size={22} />
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<div id="mobile-menu" class="fixed inset-0 z-[60] hidden lg:hidden" data-mobile-menu aria-hidden="true">
+  <div class="absolute inset-0 bg-brand-900/60 backdrop-blur-sm" data-menu-backdrop></div>
+  <div
+    class="absolute right-0 top-0 flex h-full w-[88%] max-w-sm translate-x-full flex-col bg-white shadow-2xl transition-transform duration-300 ease-industrial"
+    data-mobile-panel
+  >
+    <div class="flex h-[var(--header-height)] items-center justify-between border-b border-border px-5">
+      <span class="font-display text-sm font-bold uppercase tracking-tight text-ink">Menu</span>
+      <button
+        type="button"
+        class="flex h-11 w-11 items-center justify-center rounded-md border border-border text-ink"
+        aria-label="Close menu"
+        data-menu-close
+      >
+        <Icon name="close" size={22} />
+      </button>
+    </div>
+    <nav class="flex-1 overflow-y-auto px-5 py-6" aria-label="Mobile navigation">
+      <div class="space-y-1">
+        {mainNav.map((item) => (
+          <a
+            href={item.href}
+            class="flex items-center justify-between rounded-md px-3 py-3.5 text-base font-medium text-ink transition-colors hover:bg-bg-muted min-h-[44px]"
+          >
+            {item.label}
+            <Icon name="chevron-right" size={16} class="text-border-strong flex-shrink-0" />
+          </a>
+        ))}
+      </div>
+      <div class="mt-6 border-t border-border pt-5">
+        <p class="mb-2 px-3 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">Product range</p>
+        <div class="space-y-0.5">
+          {navProducts.map((product) => (
+            <a href={product.href} class="block rounded-md px-3 py-3 text-sm text-slate-600 transition-colors hover:bg-bg-muted hover:text-brand-500 min-h-[44px]">
+              {product.label}
+            </a>
+          ))}
+        </div>
+      </div>
+    </nav>
+    <div class="space-y-3 border-t border-border bg-bg-muted p-5">
+      <Button href="/contact" fullWidth class="min-h-[44px]">Request a quote</Button>
+      <a href={company.phoneHref} class="flex items-center justify-center gap-2 font-mono text-xs text-text-muted min-h-[44px] py-2">
+        <Icon name="phone" size={14} />
+        {company.phone}
+      </a>
+    </div>
+  </div>
+</div>
+
+<script>
+  const header = document.querySelector('[data-header-bar]');
+  const onScroll = () => {
+    if (!header) return;
+    header.classList.toggle('shadow-md', window.scrollY > 8);
+  };
+  onScroll();
+  window.addEventListener('scroll', onScroll, { passive: true });
+
+  document.querySelectorAll('[data-dropdown]').forEach((dropdown) => {
+    const toggle = dropdown.querySelector<HTMLButtonElement>('[data-dropdown-toggle]');
+    const panel = dropdown.querySelector<HTMLElement>('[data-dropdown-panel]');
+    const chevron = dropdown.querySelector<SVGElement>('[data-chevron]');
+    if (!toggle || !panel) return;
+
+    const setOpen = (open: boolean) => {
+      toggle.setAttribute('aria-expanded', String(open));
+      panel.classList.toggle('invisible', !open);
+      panel.classList.toggle('opacity-0', !open);
+      panel.classList.toggle('translate-y-2', !open);
+      chevron?.classList.toggle('rotate-180', open);
+    };
+
+    let hoverTimer: number | undefined;
+    toggle.addEventListener('click', () => setOpen(toggle.getAttribute('aria-expanded') !== 'true'));
+
+    dropdown.addEventListener('mouseenter', () => {
+      if (!window.matchMedia('(hover: hover)').matches) return;
+      window.clearTimeout(hoverTimer);
+      setOpen(true);
+    });
+
+    dropdown.addEventListener('mouseleave', () => {
+      if (!window.matchMedia('(hover: hover)').matches) return;
+      hoverTimer = window.setTimeout(() => setOpen(false), 120);
+    });
+
+    dropdown.addEventListener('focusout', (event) => {
+      if (!dropdown.contains(event.relatedTarget as Node)) setOpen(false);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') setOpen(false);
+    });
+  });
+
+  const menu = document.querySelector<HTMLElement>('[data-mobile-menu]');
+  const panel = document.querySelector<HTMLElement>('[data-mobile-panel]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-menu-toggle]');
+  const closeBtn = document.querySelector<HTMLButtonElement>('[data-menu-close]');
+  const backdrop = document.querySelector<HTMLElement>('[data-menu-backdrop]');
+
+  const closeMenu = () => {
+    if (!menu || !panel || !toggle) return;
+    menu.classList.add('hidden');
+    menu.setAttribute('aria-hidden', 'true');
+    panel.classList.add('translate-x-full');
+    toggle.setAttribute('aria-expanded', 'false');
+    document.body.style.overflow = '';
+  };
+
+  const openMenu = () => {
+    if (!menu || !panel || !toggle) return;
+    menu.classList.remove('hidden');
+    menu.setAttribute('aria-hidden', 'false');
+    requestAnimationFrame(() => panel.classList.remove('translate-x-full'));
+    toggle.setAttribute('aria-expanded', 'true');
+    document.body.style.overflow = 'hidden';
+  };
+
+  toggle?.addEventListener('click', openMenu);
+  closeBtn?.addEventListener('click', closeMenu);
+  backdrop?.addEventListener('click', closeMenu);
+  menu?.querySelectorAll('a').forEach((link) => link.addEventListener('click', closeMenu));
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape') closeMenu();
+  });
+</script>

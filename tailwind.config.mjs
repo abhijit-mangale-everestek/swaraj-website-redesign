@@ -1,0 +1,123 @@
+/** @type {import('tailwindcss').Config} */
+export default {
+  content: ['./src/**/*.{astro,html,js,jsx,md,mdx,ts,tsx}'],
+  theme: {
+    extend: {
+      colors: {
+        brand: {
+          50: '#EFF6FF',
+          100: '#DBEAFE',
+          200: '#BFDBFE',
+          300: '#93C5FD',
+          400: '#60A5FA',
+          500: '#1E40AF',
+          600: '#1E3A8A',
+          700: '#172554',
+          800: '#131E3F',
+          900: '#0F172A',
+        },
+        accent: {
+          300: '#FCD34D',
+          400: '#FBBF24',
+          500: '#F59E0B',
+          600: '#D97706',
+          700: '#B45309',
+        },
+        success: { 500: '#10B981' },
+        warning: { 500: '#F59E0B' },
+        error: { 500: '#EF4444' },
+        ink: '#0F172A',
+        surface: '#F8FAFC',
+        border: {
+          DEFAULT: 'var(--color-border)',
+          strong: 'var(--color-border-strong)',
+        },
+        text: {
+          DEFAULT: 'var(--color-text)',
+          muted: 'var(--color-text-muted)',
+          inverse: 'var(--color-text-inverse)',
+        },
+        bg: {
+          DEFAULT: 'var(--color-bg)',
+          muted: 'var(--color-bg-muted)',
+          dark: 'var(--color-bg-dark)',
+        },
+      },
+      fontFamily: {
+        display: ['"Space Grotesk Variable"', 'Space Grotesk', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        body: ['"DM Sans Variable"', 'DM Sans', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+        mono: ['"JetBrains Mono"', 'ui-monospace', 'SFMono-Regular', 'monospace'],
+      },
+      fontSize: {
+        'display-xl': ['clamp(2.5rem, 5vw, 4rem)', { lineHeight: '1.05', letterSpacing: '-0.03em', fontWeight: '700' }],
+        'display-lg': ['clamp(2rem, 4vw, 3rem)', { lineHeight: '1.1', letterSpacing: '-0.025em', fontWeight: '700' }],
+        'display-md': ['clamp(1.5rem, 3vw, 2rem)', { lineHeight: '1.15', letterSpacing: '-0.02em', fontWeight: '700' }],
+        'heading-sm': ['1.25rem', { lineHeight: '1.3', letterSpacing: '-0.01em', fontWeight: '600' }],
+        'body-lg': ['1.125rem', { lineHeight: '1.6' }],
+        body: ['1rem', { lineHeight: '1.65' }],
+        'body-sm': ['0.875rem', { lineHeight: '1.55' }],
+        mono: ['0.875rem', { lineHeight: '1.5' }],
+        label: ['0.75rem', { lineHeight: '1', letterSpacing: '0.14em', fontWeight: '500' }],
+      },
+      spacing: {
+        1: '0.25rem',
+        2: '0.5rem',
+        3: '0.75rem',
+        4: '1rem',
+        5: '1.25rem',
+        6: '1.5rem',
+        8: '2rem',
+        10: '2.5rem',
+        12: '3rem',
+        16: '4rem',
+        20: '5rem',
+        24: '6rem',
+        28: '7rem',
+        32: '8rem',
+      },
+      maxWidth: {
+        'container-sm': '640px',
+        'container-md': '768px',
+        'container-lg': '1024px',
+        'container-xl': '1280px',
+        'container-2xl': '1440px',
+      },
+      borderRadius: {
+        sm: '0.25rem',
+        md: '0.5rem',
+        lg: '0.75rem',
+        xl: '1rem',
+        '2xl': '1.25rem',
+      },
+      boxShadow: {
+        sm: '0 1px 2px 0 rgb(15 23 42 / 0.05)',
+        md: '0 4px 6px -1px rgb(15 23 42 / 0.10), 0 2px 4px -2px rgb(15 23 42 / 0.10)',
+        lg: '0 10px 15px -3px rgb(15 23 42 / 0.10), 0 4px 6px -4px rgb(15 23 42 / 0.10)',
+        xl: '0 20px 25px -5px rgb(15 23 42 / 0.10), 0 8px 10px -6px rgb(15 23 42 / 0.10)',
+        glow: '0 0 0 1px rgb(251 191 36 / 0.35), 0 18px 40px -12px rgb(251 191 36 / 0.28)',
+      },
+      transitionTimingFunction: {
+        industrial: 'cubic-bezier(0.22, 1, 0.36, 1)',
+      },
+      keyframes: {
+        'fade-up': {
+          from: { opacity: '0', transform: 'translateY(16px)' },
+          to: { opacity: '1', transform: 'translateY(0)' },
+        },
+        'slide-in': {
+          from: { opacity: '0', transform: 'translateX(-12px)' },
+          to: { opacity: '1', transform: 'translateX(0)' },
+        },
+        marquee: {
+          from: { transform: 'translateX(0)' },
+          to: { transform: 'translateX(-50%)' },
+        },
+      },
+      animation: {
+        'fade-up': 'fade-up 0.7s cubic-bezier(0.22, 1, 0.36, 1) both',
+        'slide-in': 'slide-in 0.5s cubic-bezier(0.22, 1, 0.36, 1) both',
+        marquee: 'marquee 32s linear infinite',
+      },
+    },
+  },
+};

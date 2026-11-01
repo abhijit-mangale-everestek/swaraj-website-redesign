@@ -1,0 +1,58 @@
+---
+import Icon from '../ui/Icon.astro';
+import { company } from '../../data/company';
+
+interface Props {
+  variant?: 'bar' | 'inline' | 'grid';
+  tone?: 'light' | 'dark';
+  class?: string;
+}
+
+const { variant = 'bar', tone = 'light', class: className = '' } = Astro.props;
+
+const wrapper =
+  variant === 'bar'
+    ? 'border-y border-border bg-white py-5'
+    : variant === 'grid'
+      ? ''
+      : '';
+
+const list =
+  variant === 'grid'
+    ? 'grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5'
+    : 'flex flex-wrap items-center gap-x-6 gap-y-3';
+---
+
+<div class:list={[wrapper, className]}>
+  <div class={variant === 'bar' ? 'container-page' : ''}>
+    <div class:list={['flex flex-col gap-3', variant === 'bar' ? 'md:flex-row md:items-center md:justify-between' : '']}>
+      {variant === 'bar' && (
+        <p class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
+          <Icon name="shield" size={14} class="text-success-500" />
+          Certified & compliant
+        </p>
+      )}
+      <ul class={list}>
+        {company.certifications.map((certification) => (
+          <li
+            class:list={[
+              'flex items-center gap-2 text-xs',
+              tone === 'dark' ? 'text-slate-300' : 'text-slate-600',
+              variant === 'grid' ? 'rounded-md border border-border bg-white px-3 py-2.5' : '',
+            ]}
+          >
+            <Icon
+              name="check"
+              size={13}
+              strokeWidth={2.2}
+              class={tone === 'dark' ? 'text-accent-400' : 'text-success-500'}
+            />
+            <span class={variant === 'grid' ? 'font-mono text-[10px] uppercase tracking-[0.08em]' : 'font-mono text-[11px] tracking-tight'}>
+              {certification}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</div>

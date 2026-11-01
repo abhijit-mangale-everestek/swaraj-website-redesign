@@ -1,0 +1,59 @@
+---
+interface Props {
+  variant?:
+    | 'default'
+    | 'product'
+    | 'spec'
+    | 'testimonial'
+    | 'featured'
+    | 'case'
+    | 'flat'
+    | 'dark'
+    | 'accent';
+  padding?: 'none' | 'sm' | 'md' | 'lg';
+  hover?: boolean;
+  class?: string;
+  as?: 'div' | 'article' | 'li' | 'section' | 'a';
+  id?: string;
+}
+
+const {
+  variant = 'default',
+  padding = 'md',
+  hover = false,
+  class: className = '',
+  as: Tag = 'div',
+  id,
+} = Astro.props;
+
+const variants: Record<string, string> = {
+  default: 'border border-border bg-white shadow-sm',
+  product: 'border border-border bg-white shadow-sm',
+  spec: 'border border-border bg-white shadow-sm',
+  testimonial: 'border border-border bg-bg-muted',
+  featured: 'border-2 border-accent-400 bg-white shadow-lg',
+  case: 'border border-border bg-bg-muted',
+  flat: 'border border-border bg-bg-muted',
+  dark: 'border border-white/10 bg-brand-900 text-white',
+  accent: 'border border-accent-500 bg-accent-400 text-brand-900',
+};
+
+const paddings: Record<string, string> = {
+  none: '',
+  sm: 'p-4',
+  md: 'p-6',
+  lg: 'p-8 md:p-10',
+};
+
+const classes = [
+  'relative overflow-hidden rounded-xl',
+  variants[variant],
+  paddings[padding],
+  hover ? 'transition-all duration-300 ease-industrial hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg' : '',
+  className,
+].filter(Boolean).join(' ');
+---
+
+<Tag class={classes} id={id}>
+  <slot />
+</Tag>

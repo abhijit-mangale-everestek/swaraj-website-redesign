@@ -1,0 +1,80 @@
+---
+interface Props {
+  label: string;
+  name: string;
+  id?: string;
+  type?: string;
+  value?: string;
+  placeholder?: string;
+  required?: boolean;
+  hint?: string;
+  error?: string;
+  class?: string;
+  inputClass?: string;
+  autocomplete?: string;
+  min?: string | number;
+  max?: string | number;
+  step?: string | number;
+  pattern?: string;
+  readonly?: boolean;
+  disabled?: boolean;
+  optional?: boolean;
+}
+
+const {
+  label,
+  name,
+  id = name,
+  type = 'text',
+  value,
+  placeholder,
+  required = false,
+  hint,
+  error,
+  class: className = '',
+  inputClass = '',
+  autocomplete,
+  min,
+  max,
+  step,
+  pattern,
+  readonly = false,
+  disabled = false,
+  optional = false,
+} = Astro.props;
+
+const describedBy = error ? `${id}-error` : hint ? `${id}-hint` : undefined;
+---
+
+<div class:list={['space-y-1.5', className]}>
+  <label for={id} class="flex items-baseline justify-between gap-3 text-sm font-medium text-ink">
+    <span>{label}{required && <span class="ml-0.5 text-error-500" aria-hidden="true">*</span>}</span>
+    {optional && <span class="font-mono text-[10px] uppercase tracking-[0.12em] text-text-muted">Optional</span>}
+  </label>
+  <input
+    id={id}
+    name={name}
+    type={type}
+    value={value}
+    placeholder={placeholder}
+    required={required}
+    autocomplete={autocomplete}
+    min={min}
+    max={max}
+    step={step}
+    pattern={pattern}
+    readonly={readonly}
+    disabled={disabled}
+    aria-invalid={error ? 'true' : undefined}
+    aria-describedby={describedBy}
+    class:list={[
+      'h-11 w-full rounded-md border bg-white px-3.5 text-[0.9375rem] text-ink shadow-sm outline-none transition-colors duration-150 placeholder:text-slate-400',
+      error ? 'border-error-500 focus:border-error-500 focus:ring-2 focus:ring-error-500/20' : 'border-border-strong focus:border-brand-500 focus:ring-2 focus:ring-brand-500/15',
+      readonly ? 'bg-bg-muted text-text-muted' : '',
+      disabled ? 'cursor-not-allowed opacity-60' : '',
+      inputClass,
+    ]}
+  />
+  {error && <p id={`${id}-error`} class="text-xs font-medium text-error-500">{error}</p>}
+  {hint && !error && <p id={`${id}-hint`} class="text-xs text-text-muted">{hint}</p>}
+</div>

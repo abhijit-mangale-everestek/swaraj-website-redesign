@@ -1,0 +1,51 @@
+---
+import Icon from '../ui/Icon.astro';
+import { company } from '../../data/company';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+---
+
+<section class:list={['border-b border-border bg-white', className]} aria-label="Company credentials">
+  <div class="container-page">
+    <dl class="grid grid-cols-1 gap-px overflow-hidden bg-border sm:grid-cols-2 lg:grid-cols-4">
+      {company.stats.map((stat, index) => (
+        <div class="flex items-center gap-4 bg-white px-5 py-7 md:px-7">
+          <span class="hidden font-mono text-[10px] uppercase tracking-[0.14em] text-border-strong sm:block">
+            0{index + 1}
+          </span>
+          <div>
+            <dt class="sr-only">{stat.label}</dt>
+            <dd>
+              <span class="block font-display text-2xl font-bold tracking-tight text-ink md:text-3xl">{stat.value}</span>
+              <span class="mt-1 block text-xs font-medium text-text-muted">{stat.label}</span>
+              <span class="mt-0.5 hidden font-mono text-[9px] uppercase tracking-[0.1em] text-slate-400 md:block">
+                {stat.detail}
+              </span>
+            </dd>
+          </div>
+        </div>
+      ))}
+    </dl>
+
+    <div class="flex flex-col gap-4 border-t border-border py-5 md:flex-row md:items-center md:justify-between">
+      <p class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.16em] text-text-muted">
+        <span class="flex h-6 w-6 items-center justify-center rounded-full bg-emerald-50 text-success-500">
+          <Icon name="shield" size={13} />
+        </span>
+        Certified manufacturer · Ambernath, Maharashtra
+      </p>
+      <ul class="flex flex-wrap items-center gap-x-5 gap-y-2">
+        {company.certifications.slice(0, 4).map((certification) => (
+          <li class="flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-500">
+            <Icon name="check" size={12} strokeWidth={2.4} class="text-success-500" />
+            {certification}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</section>

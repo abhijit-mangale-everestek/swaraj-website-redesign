@@ -1,0 +1,74 @@
+---
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { company } from '../../data/company';
+
+interface Props {
+  eyebrow?: string;
+  title?: string;
+  description?: string;
+  primary?: { label: string; href: string };
+  secondary?: { label: string; href: string };
+  class?: string;
+}
+
+const {
+  eyebrow = 'Start a project',
+  title = 'Tell us what you need to lift.',
+  description = 'Send capacity, span, lift height and site photos. Our engineering team will come back with a configuration, drawings and an indicative price within one working day.',
+  primary = { label: 'Request a quote', href: '/contact' },
+  secondary = { label: 'Call the sales desk', href: company.phoneHref },
+  class: className = '',
+} = Astro.props;
+---
+
+<section class:list={['relative overflow-hidden bg-brand-900 text-white', className]}>
+  <div class="absolute inset-0 grid-pattern opacity-40" aria-hidden="true"></div>
+  <div class="absolute -left-24 bottom-0 h-72 w-72 rounded-full bg-brand-500/25 blur-[90px]" aria-hidden="true"></div>
+  <div class="absolute -right-16 -top-24 h-72 w-72 rounded-full bg-accent-400/10 blur-[90px]" aria-hidden="true"></div>
+
+  <div class="container-page relative py-14 md:py-20">
+    <div class="grid gap-10 lg:grid-cols-[1.35fr_1fr] lg:items-center">
+      <div class="max-w-2xl">
+        <p class="eyebrow eyebrow-inverse mb-5">{eyebrow}</p>
+        <h2 class="text-display-lg text-white">{title}</h2>
+        <p class="mt-4 max-w-xl text-body-lg text-slate-300">{description}</p>
+
+        <div class="mt-8 flex flex-col gap-3 sm:flex-row sm:items-center">
+          <Button href={primary.href} variant="accent" size="lg">{primary.label}</Button>
+          <Button href={secondary.href} variant="ghost" size="lg">{secondary.label}</Button>
+        </div>
+      </div>
+
+      <div class="rounded-xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+        <p class="font-mono text-[10px] uppercase tracking-[0.16em] text-slate-400">What happens next</p>
+        <ol class="mt-4 space-y-3">
+          {[
+            'We review the load, span and site constraints.',
+            'You receive a configuration and GA drawing.',
+            'We confirm price, lead time and payment terms.',
+          ].map((step, index) => (
+            <li class="flex items-start gap-3">
+              <span class="flex h-6 w-6 shrink-0 items-center justify-center rounded-full bg-accent-400 font-mono text-[10px] font-bold text-brand-900">
+                {index + 1}
+              </span>
+              <span class="text-sm leading-relaxed text-slate-300">{step}</span>
+            </li>
+          ))}
+        </ol>
+        <div class="mt-5 flex flex-wrap items-center gap-x-5 gap-y-2 border-t border-white/10 pt-4">
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-400">
+            <Icon name="clock" size={12} class="text-accent-400" /> 1 working day
+          </span>
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-400">
+            <Icon name="shield" size={12} class="text-accent-400" /> No obligation
+          </span>
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-400">
+            <Icon name="factory" size={12} class="text-accent-400" /> In-house build
+          </span>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="stripe-divider h-1.5 w-full" aria-hidden="true"></div>
+</section>

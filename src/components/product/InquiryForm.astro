@@ -1,0 +1,177 @@
+---
+import Input from '../ui/Input.astro';
+import Select from '../ui/Select.astro';
+import Textarea from '../ui/Textarea.astro';
+import Button from '../ui/Button.astro';
+import Icon from '../ui/Icon.astro';
+import { productCategories, company } from '../../data/company';
+
+interface Props {
+  title?: string;
+  description?: string;
+  productTitle?: string;
+  productSku?: string;
+  formName?: string;
+  compact?: boolean;
+  class?: string;
+}
+
+const {
+  title = 'Tell us what you need to lift',
+  description = 'Share your capacity, span and site details. Our engineering team will respond with a specification and indicative price within one working day.',
+  productTitle,
+  productSku,
+  formName = 'inquiry',
+  compact = false,
+  class: className = '',
+} = Astro.props;
+
+const interestOptions = [
+  ...productCategories.map((category) => ({ value: category.slug, label: category.label })),
+  { value: 'service', label: 'Service, AMC or spares' },
+  { value: 'other', label: 'Something else' },
+];
+
+const timelineOptions = [
+  { value: 'immediate', label: 'Immediate / within 1 month' },
+  { value: '1-3-months', label: '1 – 3 months' },
+  { value: '3-6-months', label: '3 – 6 months' },
+  { value: 'exploring', label: 'Exploring options' },
+];
+---
+
+<div class:list={['rounded-xl border border-border bg-white shadow-sm', compact ? 'p-6' : 'p-6 md:p-8', className]} data-inquiry>
+  <div data-inquiry-form-wrap>
+    {title && (
+      <div class="mb-6">
+        <h3 class="font-display text-xl font-bold tracking-tight text-ink">{title}</h3>
+        {description && <p class="mt-2 text-sm leading-relaxed text-text-muted">{description}</p>}
+      </div>
+    )}
+
+    {productTitle && (
+      <div class="mb-6 flex items-center gap-3 rounded-md border border-brand-100 bg-brand-50 px-4 py-3">
+        <Icon name="crane" size={20} class="shrink-0 text-brand-500" />
+        <div class="min-w-0">
+          <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-brand-500">Enquiring about</p>
+          <p class="truncate text-sm font-semibold text-ink">{productTitle}</p>
+        </div>
+        {productSku && <span class="ml-auto shrink-0 font-mono text-[10px] text-text-muted">{productSku}</span>}
+      </div>
+    )}
+
+    <form
+      class="space-y-4"
+      method="POST"
+      name={formName}
+      data-netlify="true"
+      netlify-honeypot="bot-field"
+      data-inquiry-form
+    >
+      <input type="hidden" name="form-name" value={formName} />
+      {productTitle && <input type="hidden" name="product" value={productTitle} />}
+      {productSku && <input type="hidden" name="sku" value={productSku} />}
+      <p class="hidden" aria-hidden="true">
+        <label>Do not fill this out: <input name="bot-field" tabindex="-1" autocomplete="off" /></label>
+      </p>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <Input label="Full name" name="name" autocomplete="name" placeholder="Your name" required />
+        <Input label="Company" name="company" autocomplete="organization" placeholder="Company name" required />
+        <Input label="Work email" name="email" type="email" autocomplete="email" placeholder="name@company.com" required />
+        <Input label="Phone / WhatsApp" name="phone" type="tel" autocomplete="tel" placeholder="+91 00000 00000" required />
+      </div>
+
+      <div class="grid gap-4 sm:grid-cols-2">
+        <Select
+          label="What do you need?"
+          name="interest"
+          options={interestOptions}
+          value={productTitle ? undefined : undefined}
+          required
+        />
+        <Input label="Required capacity" name="capacity" placeholder="e.g. 10 Ton" optional />
+      </div>
+
+      {!compact && (
+        <div class="grid gap-4 sm:grid-cols-2">
+          <Input label="Span / lift height" name="dimensions" placeholder="e.g. 22.5 m span, 12 m lift" optional />
+          <Select label="Timeline" name="timeline" options={timelineOptions} optional />
+        </div>
+      )}
+
+      <Textarea
+        label="Site & application details"
+        name="message"
+        rows={compact ? 3 : 4}
+        placeholder="Indoor or outdoor, duty cycle, power supply, hazardous area, existing rail system…"
+        optional
+      />
+
+      <label class="flex cursor-pointer items-start gap-3 pt-1 text-xs leading-relaxed text-text-muted">
+        <input
+          type="checkbox"
+          name="consent"
+          required
+          class="mt-0.5 h-4 w-4 shrink-0 rounded-sm border-border-strong text-brand-500 focus:ring-brand-500/30"
+        />
+        <span>
+          I agree to be contacted about this enquiry. We never share your details with third parties.
+        </span>
+      </label>
+
+      <Button type="submit" size="lg" fullWidth>Send enquiry</Button>
+
+      <p class="flex items-center justify-center gap-2 text-center font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+        <Icon name="shield" size={12} class="text-success-500" />
+        Response within one working day
+      </p>
+    </form>
+  </div>
+
+  <div class="hidden py-8 text-center" data-inquiry-success role="status" aria-live="polite">
+    <span class="mx-auto flex h-14 w-14 items-center justify-center rounded-full bg-emerald-50 text-success-500">
+      <Icon name="check" size={26} strokeWidth={2.4} />
+    </span>
+    <h3 class="mt-4 font-display text-xl font-bold text-ink">Enquiry received</h3>
+    <p class="mx-auto mt-2 max-w-sm text-sm text-text-muted">
+      Thank you. Our engineering team will review your requirements and get back to you within one working day. For urgent
+      requirements, call <a href={company.phoneHref} class="font-medium text-brand-500 underline underline-offset-2">{company.phone}</a>.
+    </p>
+    <button
+      type="button"
+      class="mt-5 font-mono text-[11px] uppercase tracking-[0.12em] text-brand-500 underline underline-offset-4"
+      data-inquiry-reset
+    >
+      Send another enquiry
+    </button>
+  </div>
+</div>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-inquiry]').forEach((wrapper) => {
+    const form = wrapper.querySelector<HTMLFormElement>('[data-inquiry-form]');
+    const formWrap = wrapper.querySelector<HTMLElement>('[data-inquiry-form-wrap]');
+    const success = wrapper.querySelector<HTMLElement>('[data-inquiry-success]');
+    const reset = wrapper.querySelector<HTMLButtonElement>('[data-inquiry-reset]');
+    if (!form || !formWrap || !success) return;
+
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      if (!form.checkValidity()) {
+        form.reportValidity();
+        return;
+      }
+      formWrap.classList.add('hidden');
+      success.classList.remove('hidden');
+      success.focus();
+    });
+
+    reset?.addEventListener('click', () => {
+      form.reset();
+      formWrap.classList.remove('hidden');
+      success.classList.add('hidden');
+      form.querySelector<HTMLInputElement>('input[name="name"]')?.focus();
+    });
+  });
+</script>

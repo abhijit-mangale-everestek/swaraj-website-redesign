@@ -1,0 +1,116 @@
+---
+import Section from '../ui/Section.astro';
+import Icon from '../ui/Icon.astro';
+import { company } from '../../data/company';
+
+interface Props {
+  class?: string;
+}
+
+const { class: className = '' } = Astro.props;
+
+const pillars = [
+  {
+    icon: 'custom',
+    title: 'Engineered to the site',
+    description:
+      'Span, headroom, duty cycle and power supply drive the design. We do not force a catalogue model into a building that does not suit it.',
+    points: ['Site survey and load review', 'GA drawings before fabrication', 'Third-party design checks on request'],
+  },
+  {
+    icon: 'factory',
+    title: 'Fabricated in-house',
+    description:
+      'Structural steel, machining, assembly and testing happen at our Ambernath works — so tolerances, paint systems and delivery dates stay under one roof.',
+    points: ['CNC cutting and fit-up', 'Machined wheel and gear interfaces', 'Load testing with calibrated weights'],
+  },
+  {
+    icon: 'shield',
+    title: 'Safety as a deliverable',
+    description:
+      'Dual brakes, overload limiting, limit switches and emergency stops are standard — not extras. Every machine ships with test certificates and O&M manuals.',
+    points: ['IS 3177 and IS 807 design basis', 'Factory Act compliance', 'Operator briefing at handover'],
+  },
+  {
+    icon: 'wrench',
+    title: 'Service for the long run',
+    description:
+      'Cranes are long-life assets. We support them with spares, AMC programmes and breakdown response across India, long after commissioning.',
+    points: ['Annual maintenance contracts', 'Genuine spares and wear parts', 'Remote diagnostics and site visits'],
+  },
+];
+
+const process = [
+  { label: 'Requirement', detail: 'Load, span, height, duty' },
+  { label: 'Design', detail: 'GA drawing and load calcs' },
+  { label: 'Fabrication', detail: 'In-house build and testing' },
+  { label: 'Commissioning', detail: 'Erection, load test, training' },
+];
+---
+
+<Section
+  eyebrow="Why Swaraj"
+  title="Engineering depth you can audit"
+  description="Since 2007 we have built a single capability: designing and manufacturing lifting equipment that holds up to Indian plant conditions and production schedules."
+  class={className}
+>
+  <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+    {pillars.map((pillar, index) => (
+      <article
+        class="group relative flex flex-col rounded-xl border border-border bg-white p-6 shadow-sm transition-all duration-300 ease-industrial hover:-translate-y-1 hover:border-brand-300 hover:shadow-lg"
+        data-reveal
+        style={`transition-delay:${index * 50}ms`}
+      >
+        <div class="flex items-center justify-between">
+          <span class="flex h-11 w-11 items-center justify-center rounded-lg bg-brand-900 text-accent-400">
+            <Icon name={pillar.icon} size={22} strokeWidth={1.5} />
+          </span>
+          <span class="font-mono text-[10px] uppercase tracking-[0.14em] text-border-strong">0{index + 1}</span>
+        </div>
+        <h3 class="mt-5 font-display text-lg font-bold tracking-tight text-ink">{pillar.title}</h3>
+        <p class="mt-2 text-sm leading-relaxed text-text-muted">{pillar.description}</p>
+        <ul class="mt-5 space-y-2 border-t border-border pt-4">
+          {pillar.points.map((point) => (
+            <li class="flex items-start gap-2 text-xs leading-relaxed text-slate-600">
+              <Icon name="check" size={12} strokeWidth={2.4} class="mt-0.5 shrink-0 text-success-500" />
+              {point}
+            </li>
+          ))}
+        </ul>
+      </article>
+    ))}
+  </div>
+
+  <div class="mt-10 overflow-hidden rounded-xl border border-border bg-brand-900">
+    <div class="flex flex-col gap-6 p-6 md:p-8 lg:flex-row lg:items-center lg:justify-between">
+      <div class="max-w-md">
+        <p class="eyebrow eyebrow-inverse mb-3">One partner, start to finish</p>
+        <h3 class="font-display text-xl font-bold tracking-tight text-white md:text-2xl">
+          From first site photo to first lift
+        </h3>
+        <p class="mt-2 text-sm leading-relaxed text-slate-400">
+          A single engineering and project team owns the scope — no handoffs between design, fabrication and installation.
+        </p>
+      </div>
+      <ol class="grid flex-1 grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-4">
+        {process.map((step, index) => (
+          <li class="relative rounded-lg border border-white/10 bg-white/5 px-4 py-4">
+            <span class="font-mono text-[9px] uppercase tracking-[0.14em] text-accent-400">Step {index + 1}</span>
+            <p class="mt-2 text-sm font-semibold text-white">{step.label}</p>
+            <p class="mt-1 text-[11px] leading-snug text-slate-400">{step.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+    <div class="border-t border-white/10 px-6 py-4 md:px-8">
+      <ul class="flex flex-wrap items-center gap-x-6 gap-y-2">
+        {company.industries.map((industry) => (
+          <li class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-slate-400">
+            <span class="h-1 w-1 rounded-full bg-accent-400"></span>
+            {industry}
+          </li>
+        ))}
+      </ul>
+    </div>
+  </div>
+</Section>

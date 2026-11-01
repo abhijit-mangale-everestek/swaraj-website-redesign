@@ -1,0 +1,261 @@
+---
+import Base from '../layouts/Base.astro';
+import Hero from '../components/layout/Hero.astro';
+import Section from '../components/ui/Section.astro';
+import TrustBadges from '../components/common/TrustBadges.astro';
+import CTABanner from '../components/common/CTABanner.astro';
+import ProductVisual from '../components/ui/ProductVisual.astro';
+import Breadcrumb from '../components/common/Breadcrumb.astro';
+import Icon from '../components/ui/Icon.astro';
+import { getCollection } from 'astro:content';
+import { company } from '../data/company';
+
+const team = (await getCollection('team')).sort((a, b) => a.data.order - b.data.order);
+
+const timeline = [
+  { year: '2007', title: 'Founded in Ambernath', detail: 'Swaraj begins as a crane fabrication and service workshop serving Thane district industry.' },
+  { year: '2012', title: 'First goliath crane', detail: 'The company extends from overhead cranes into rail-mounted gantry systems for outdoor yards.' },
+  { year: '2016', title: 'ISO 9001 certification', detail: 'Quality processes for design, fabrication, testing and dispatch are formalised and certified.' },
+  { year: '2020', title: '100T class capability', detail: 'Heavy goliath and precast handling systems are added to the engineering range.' },
+  { year: '2024', title: '500+ installations', detail: 'Cranes and hoists commissioned across manufacturing, infrastructure, logistics and power.' },
+];
+
+const values = [
+  {
+    icon: 'target',
+    title: 'Application before catalogue',
+    description: 'We start with the load, the building and the duty cycle, then select or design the machine. A standard model is a good outcome, not the starting assumption.',
+  },
+  {
+    icon: 'layers',
+    title: 'Documentation as standard',
+    description: 'GA drawings, load calculations, test certificates and O&M manuals are part of the scope on every machine, not a paid extra.',
+  },
+  {
+    icon: 'shield',
+    title: 'Safety built in',
+    description: 'Dual braking, overload protection and limit switches are designed into the base machine. Safety is not a list of add-ons.',
+  },
+  {
+    icon: 'wrench',
+    title: 'Support after handover',
+    description: 'Spares, AMC programmes and breakdown response keep the asset productive for its service life, not just until commissioning.',
+  },
+];
+
+const facility = [
+  'Structural fabrication with CNC cutting and fit-up',
+  'Machining of wheel blocks, shafts and gear interfaces',
+  'Assembly, wiring and paint under one roof',
+  'Load testing with calibrated weights before dispatch',
+  'Dimensional and weld inspection records',
+  'Despatch and erection planning with site teams',
+];
+---
+
+<Base
+  title="About"
+  description="Swaraj Engineering Corporation has designed, manufactured and commissioned cranes and hoists from Ambernath, Maharashtra since 2007."
+>
+  <Hero
+    eyebrow="About Swaraj"
+    title="Built in Ambernath. "
+    accent="Lifting across India."
+    description="Since 2007 we have focused on one thing: designing and manufacturing lifting equipment that holds up to Indian plant conditions, production schedules and site constraints."
+    primary={{ label: 'Talk to our team', href: '/contact' }}
+    secondary={{ label: 'See the product range', href: '/products' }}
+    note={`ISO 9001:2015 certified · ${company.address.city}, ${company.address.state}`}
+    stats={company.stats.slice(0, 3).map((stat) => ({ value: stat.value, label: stat.label }))}
+  >
+    <div class="relative mx-auto w-full max-w-lg">
+      <div class="absolute -inset-3 rounded-2xl border border-white/10" aria-hidden="true"></div>
+      <div class="relative overflow-hidden rounded-xl border border-white/15 bg-white/5 shadow-2xl">
+        <ProductVisual category="component" tone="blueprint" label="Works · Ambernath" class="aspect-[4/3] w-full" />
+        <div class="grid grid-cols-2 gap-px border-t border-white/10 bg-white/10">
+          <div class="bg-brand-900/80 px-4 py-3">
+            <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">Works</p>
+            <p class="mt-0.5 text-sm font-semibold text-white">MIDC, Ambernath East</p>
+          </div>
+          <div class="bg-brand-900/80 px-4 py-3">
+            <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-slate-400">Team</p>
+            <p class="mt-0.5 text-sm font-semibold text-white">Design to commissioning</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </Hero>
+
+  <section class="border-b border-border bg-bg-muted">
+    <div class="container-page py-5">
+      <Breadcrumb items={[{ label: 'Home', href: '/' }, { label: 'About' }]} />
+    </div>
+  </section>
+
+  <Section
+    eyebrow="Our story"
+    title="One capability, built over two decades"
+    description="The company grew from a fabrication and service workshop into a crane manufacturer because customers kept bringing us lifting problems that standard equipment could not solve."
+  >
+    <div class="grid gap-10 lg:grid-cols-[1fr_1fr] lg:gap-16">
+      <div class="prose-industrial text-[0.9375rem] leading-relaxed text-text-muted">
+        <p>
+          Swaraj Engineering Corporation was founded in {company.founded} in Ambernath, an industrial belt with a dense
+          mix of fabrication, machine shops and process plants. The work started with crane fabrication and service,
+          which gave us an early view of how equipment fails in real plants — and why fit matters as much as capacity.
+        </p>
+        <p>
+          Over time we added design capability, machining and testing under one roof. Today we design and build EOT
+          cranes, goliath cranes, jib cranes, wire rope hoists and custom lifting systems, and support them through
+          installation, operator briefing, spares and annual maintenance.
+        </p>
+        <p>
+          Most of our work comes from repeat customers and referrals. That is deliberate. A crane is a long-life asset,
+          and the relationship should last longer than the warranty.
+        </p>
+      </div>
+
+      <ol class="relative space-y-0 border-l border-border pl-6">
+        {timeline.map((item, index) => (
+          <li class="relative pb-7 last:pb-0">
+            <span
+              class:list={[
+                'absolute -left-[1.72rem] flex h-3 w-3 items-center justify-center rounded-full ring-4 ring-white',
+                index === timeline.length - 1 ? 'bg-accent-400' : 'bg-brand-500',
+              ]}
+            ></span>
+            <p class="font-mono text-[10px] uppercase tracking-[0.14em] text-brand-500">{item.year}</p>
+            <h3 class="mt-1 font-display text-base font-bold tracking-tight text-ink">{item.title}</h3>
+            <p class="mt-1 text-sm leading-relaxed text-text-muted">{item.detail}</p>
+          </li>
+        ))}
+      </ol>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="How we work"
+    title="Principles that survive a site visit"
+    description="These are the working rules our engineering and project teams apply on every enquiry, whether it is a single hoist or a 100 tonne gantry."
+    class="bg-bg-muted"
+  >
+    <div class="grid gap-4 md:grid-cols-2">
+      {values.map((value, index) => (
+        <article class="flex gap-4 rounded-xl border border-border bg-white p-6 shadow-sm" data-reveal style={`transition-delay:${index * 50}ms`}>
+          <span class="flex h-11 w-11 shrink-0 items-center justify-center rounded-lg bg-brand-50 text-brand-500">
+            <Icon name={value.icon} size={22} strokeWidth={1.5} />
+          </span>
+          <div>
+            <h3 class="font-display text-base font-bold tracking-tight text-ink">{value.title}</h3>
+            <p class="mt-1.5 text-sm leading-relaxed text-text-muted">{value.description}</p>
+          </div>
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Manufacturing"
+    title="The works behind every delivery date"
+    description="Design, fabrication, machining, assembly and testing are controlled in-house. That is how tolerances, paint systems and dispatch dates stay accountable."
+  >
+    <div class="grid gap-8 lg:grid-cols-[1.05fr_1fr] lg:items-center">
+      <div class="overflow-hidden rounded-xl border border-border bg-white shadow-sm">
+        <ProductVisual category="custom" tone="light" label="Fabrication bay" capacity="Ambernath works" class="aspect-[16/10] w-full" />
+        <div class="flex flex-wrap items-center gap-x-6 gap-y-2 border-t border-border px-5 py-4">
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+            <Icon name="factory" size={13} class="text-brand-500" /> In-house fabrication
+          </span>
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+            <Icon name="award" size={13} class="text-brand-500" /> ISO 9001:2015
+          </span>
+          <span class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.1em] text-text-muted">
+            <Icon name="check" size={13} class="text-success-500" /> Load tested
+          </span>
+        </div>
+      </div>
+
+      <div>
+        <ul class="grid gap-3 sm:grid-cols-2">
+          {facility.map((item) => (
+            <li class="flex items-start gap-2.5 rounded-lg border border-border bg-white px-4 py-3.5 text-sm leading-relaxed text-text-muted">
+              <Icon name="check" size={13} strokeWidth={2.4} class="mt-1 shrink-0 text-success-500" />
+              {item}
+            </li>
+          ))}
+        </ul>
+
+        <div class="mt-6 rounded-lg border border-brand-100 bg-brand-50 p-5">
+          <p class="flex items-center gap-2 font-mono text-[10px] uppercase tracking-[0.12em] text-brand-500">
+            <Icon name="pin" size={13} /> Works & office
+          </p>
+          <address class="mt-2 text-sm not-italic leading-relaxed text-slate-600">
+            {company.address.line1}<br />
+            {company.address.line2}, {company.address.city}<br />
+            {company.address.district}, {company.address.state} {company.address.pin}
+          </address>
+          <a href="/contact" class="mt-3 inline-flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-brand-500">
+            Plan a visit
+            <Icon name="arrow-right" size={12} />
+          </a>
+        </div>
+      </div>
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Leadership"
+    title="The people who sign off the work"
+    description="Engineering, quality and service leads work directly with customers. There is no separate account layer between you and the team building the machine."
+    class="bg-bg-muted"
+  >
+    <div class="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
+      {team.map((member, index) => (
+        <article class="flex flex-col rounded-xl border border-border bg-white p-6 shadow-sm" data-reveal style={`transition-delay:${index * 50}ms`}>
+          <span class="flex h-12 w-12 items-center justify-center rounded-full bg-brand-900 font-display text-base font-bold text-accent-400">
+            {member.data.initials}
+          </span>
+          <h3 class="mt-4 font-display text-base font-bold tracking-tight text-ink">{member.data.name}</h3>
+          <p class="mt-0.5 font-mono text-[10px] uppercase tracking-[0.1em] text-brand-500">{member.data.role}</p>
+          <p class="mt-3 flex-1 text-sm leading-relaxed text-text-muted">{member.data.bio}</p>
+          <div class="mt-5 flex items-center justify-between border-t border-border pt-4">
+            <span class="font-mono text-[9px] uppercase tracking-[0.1em] text-text-muted">{member.data.department}</span>
+            {member.data.email && (
+              <a href={`mailto:${member.data.email}`} class="text-text-muted transition-colors hover:text-brand-500" aria-label={`Email ${member.data.name}`}>
+                <Icon name="mail" size={15} />
+              </a>
+            )}
+          </div>
+        </article>
+      ))}
+    </div>
+  </Section>
+
+  <Section
+    eyebrow="Standards"
+    title="Certified, compliant, documented"
+    description="Our design basis and quality system are aligned to Indian crane standards and customer audit requirements."
+  >
+    <TrustBadges variant="grid" />
+    <div class="mt-8 grid gap-4 md:grid-cols-3">
+      {[
+        { label: 'Design basis', value: 'IS 3177 · IS 807', detail: 'Structural and mechanical design of cranes and hoists.' },
+        { label: 'Quality system', value: 'ISO 9001:2015', detail: 'Documented process from enquiry to after-sales service.' },
+        { label: 'Statutory', value: 'Factory Act compliant', detail: 'Documentation and safeguards for plant inspections.' },
+      ].map((item) => (
+        <div class="rounded-xl border border-border bg-bg-muted p-5">
+          <p class="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">{item.label}</p>
+          <p class="mt-1.5 font-display text-base font-bold tracking-tight text-ink">{item.value}</p>
+          <p class="mt-1.5 text-sm leading-relaxed text-text-muted">{item.detail}</p>
+        </div>
+      ))}
+    </div>
+  </Section>
+
+  <CTABanner
+    eyebrow="Work with us"
+    title="Bring us the constraint, not just the capacity."
+    description="Send a site photo, span and load. We will tell you what is practical, what it costs and how long it takes — before you commit."
+    primary={{ label: 'Talk to an engineer', href: '/contact' }}
+    secondary={{ label: 'Browse products', href: '/products' }}
+  />
+</Base>

@@ -1,0 +1,407 @@
+---
+import Base from '../../layouts/Base.astro';
+import Breadcrumb from '../../components/common/Breadcrumb.astro';
+import Gallery from '../../components/product/Gallery.astro';
+import InquiryForm from '../../components/product/InquiryForm.astro';
+import ProductCard from '../../components/product/ProductCard.astro';
+import SpecTable from '../../components/ui/SpecTable.astro';
+import Badge from '../../components/ui/Badge.astro';
+import Button from '../../components/ui/Button.astro';
+import Icon from '../../components/ui/Icon.astro';
+import Section from '../../components/ui/Section.astro';
+import { getCollection, render } from 'astro:content';
+import { company, categoryLabels } from '../../data/company';
+
+export async function getStaticPaths() {
+  const products = await getCollection('products');
+  return products.map((product) => ({
+    params: { slug: product.id },
+    props: { product },
+  }));
+}
+
+const { product } = Astro.props;
+const { data } = product;
+const { Content } = await render(product);
+
+const products = await getCollection('products');
+const category = categoryLabels[data.category] ?? data.category;
+
+const availabilityMap = {
+  'in-stock': { label: 'In stock', variant: 'success' as const },
+  'made-to-order': { label: 'Made to order', variant: 'brand' as const },
+  engineered: { label: 'Engineered to order', variant: 'accent' as const },
+};
+
+const availability = availabilityMap[data.availability];
+
+const categoryRank = (item: (typeof products)[number]) =>
+  item.data.category === data.category ? 0 : 1;
+
+const related = (data.relatedProducts.length > 0
+  ? data.relatedProducts
+      .map((id) => products.find((item) => item.id === id))
+      .filter((item): item is (typeof products)[number] => Boolean(item) && item?.id !== product.id)
+  : []
+)
+  .concat(
+    products
+      .filter((item) => item.id !== product.id)
+      .sort((a, b) => categoryRank(a) - categoryRank(b) || a.data.order - b.data.order)
+  )
+  .filter((item, index, list) => list.findIndex((candidate) => candidate.id === item.id) === index)
+  .slice(0, 3);
+
+const specRows = [
+  { label: 'Rated capacity', value: data.specs.capacity, highlight: true },
+  { label: 'Span', value: data.specs.span },
+  { label: 'Lift height', value: data.specs.liftHeight },
+  { label: 'Duty class', value: data.specs.dutyClass },
+  { label: 'Hoist speed', value: data.specs.hoistSpeed },
+  { label: 'Cross travel', value: data.specs.crossTravel },
+  { label: 'Long travel', value: data.specs.longTravel },
+  { label: 'Power supply', value: data.specs.powerSupply },
+  { label: 'Control type', value: data.specs.controlType },
+].filter((spec): spec is { label: string; value: string; highlight?: boolean } => Boolean(spec.value));
+
+const commercialRows = [
+  { label: 'Model / SKU', value: data.sku },
+  { label: 'Product family', value: category },
+  { label: 'Availability', value: availability.label },
+  { label: 'Lead time', value: data.leadTime },
+  { label: 'Warranty', value: data.warranty },
+  { label: 'Standards', value: data.certifications.length > 0 ? data.certifications.join(' · ') : 'IS 3177 / IS 807' },
+];
+
+const keySpecs = [
+  { label: 'Capacity', value: data.specs.capacity },
+  { label: 'Span', value: data.specs.span ?? 'Custom' },
+  { label: 'Lift height', value: data.specs.liftHeight ?? 'Custom' },
+  { label: 'Duty class', value: data.specs.dutyClass ?? 'Project specific' },
+];
+
+const tabs = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'specifications', label: 'Specifications' },
+  { id: 'features', label: 'Features & safety' },
+  { id: 'applications', label: 'Applications' },
+  { id: 'downloads', label: 'Downloads' },
+];
+
+const productSchema = {
+  '@context': 'https://schema.org',
+  '@type': 'Product',
+  name: data.title,
+  sku: data.sku,
+  description: data.shortDescription,
+  category,
+  brand: {
+    '@type': 'Brand',
+    name: company.name,
+  },
+  manufacturer: {
+    '@type': 'Organization',
+    name: company.name,
+  },
+  offers: {
+    '@type': 'Offer',
+    availability: data.availability === 'in-stock' ? 'https://schema.org/InStock' : 'https://schema.org/PreOrder',
+    priceCurrency: 'INR',
+    priceSpecification: {
+      '@type': 'PriceSpecification',
+      description: 'Indicative quotation on request',
+    },
+  },
+};
+---
+
+<Base
+  title={data.title}
+  description={data.shortDescription}
+  image={data.heroImage ?? '/og-image.svg'}
+>
+  <script type="application/ld+json" set:html={JSON.stringify(productSchema)} />
+
+  <section class="border-b border-border bg-bg-muted">
+    <div class="container-page py-6">
+      <Breadcrumb
+        items={[
+          { label: 'Home', href: '/' },
+          { label: 'Products', href: '/products' },
+          { label: category, href: `/products?category=${data.category}` },
+          { label: data.title },
+        ]}
+      />
+    </div>
+  </section>
+
+  <section class="py-10 md:py-14">
+    <div class="container-page">
+      <div class="grid gap-10 lg:grid-cols-[1.02fr_0.98fr] lg:gap-14">
+        <Gallery category={data.category} title={data.title} capacity={data.specs.capacity} />
+
+        <div>
+          <div class="flex flex-wrap items-center gap-2">
+            <Badge variant="brand">{category}</Badge>
+            <Badge variant={availability.variant} dot>{availability.label}</Badge>
+            {data.isNew && <Badge variant="accent">New model</Badge>}
+          </div>
+
+          <h1 class="mt-5 text-display-md text-ink md:text-display-lg">{data.title}</h1>
+
+          <div class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 font-mono text-[11px] uppercase tracking-[0.1em] text-text-muted">
+            <span>SKU {data.sku}</span>
+            <span class="h-3 w-px bg-border-strong"></span>
+            <span>Lead time {data.leadTime}</span>
+          </div>
+
+          <p class="mt-5 max-w-xl text-body-lg text-text-muted">{data.shortDescription}</p>
+
+          <dl class="mt-7 grid grid-cols-2 gap-px overflow-hidden rounded-lg border border-border bg-border">
+            {keySpecs.map((spec) => (
+              <div class="bg-white px-4 py-4">
+                <dt class="font-mono text-[9px] uppercase tracking-[0.14em] text-text-muted">{spec.label}</dt>
+                <dd class="mt-1 font-mono text-sm font-semibold tracking-tight text-ink">{spec.value}</dd>
+              </div>
+            ))}
+          </dl>
+
+          <div class="mt-7 flex flex-col gap-3 sm:flex-row">
+            <Button href="#inquiry" size="lg">Request a quote</Button>
+            <Button
+              href={data.datasheet ?? '#inquiry'}
+              variant="secondary"
+              size="lg"
+              target={data.datasheet ? '_blank' : undefined}
+            >
+              {data.datasheet ? 'Download datasheet' : 'Request datasheet'}
+            </Button>
+          </div>
+
+          <ul class="mt-7 space-y-2.5 border-t border-border pt-5">
+            {[
+              { icon: 'factory', text: 'Fabricated and load-tested at our Ambernath works' },
+              { icon: 'shield', text: `Supplied against ${data.certifications.join(', ') || 'IS 3177 / IS 807'}` },
+              { icon: 'wrench', text: `Warranty: ${data.warranty}` },
+            ].map((item) => (
+              <li class="flex items-start gap-2.5 text-sm text-text-muted">
+                <Icon name={item.icon} size={15} class="mt-0.5 shrink-0 text-brand-500" />
+                {item.text}
+              </li>
+            ))}
+          </ul>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="border-y border-border bg-bg-muted py-12 md:py-16">
+    <div class="container-page grid gap-8 lg:grid-cols-[1.65fr_1fr] lg:items-start">
+      <div class="overflow-hidden rounded-xl border border-border bg-white shadow-sm" data-tabs>
+        <div class="hide-scrollbar flex gap-1 overflow-x-auto border-b border-border px-3 pt-2" role="tablist" aria-label="Product information">
+          {tabs.map((tab, index) => (
+            <button
+              type="button"
+              id={`tab-${tab.id}`}
+              role="tab"
+              aria-selected={index === 0 ? 'true' : 'false'}
+              aria-controls={`panel-${tab.id}`}
+              tabindex={index === 0 ? 0 : -1}
+              data-tab={tab.id}
+              class:list={[
+                '-mb-px whitespace-nowrap border-b-2 px-4 py-3 text-sm font-medium transition-colors',
+                index === 0
+                  ? 'border-brand-500 text-brand-500'
+                  : 'border-transparent text-text-muted hover:text-ink',
+              ]}
+            >
+              {tab.label}
+            </button>
+          ))}
+        </div>
+
+        <div class="p-6 md:p-8">
+          <div id="panel-overview" role="tabpanel" aria-labelledby="tab-overview" data-tab-panel>
+            <div class="prose-industrial max-w-none text-[0.9375rem] leading-relaxed text-text-muted">
+              <Content />
+            </div>
+          </div>
+
+          <div id="panel-specifications" role="tabpanel" aria-labelledby="tab-specifications" data-tab-panel class="hidden">
+            <h2 class="font-display text-xl font-bold tracking-tight text-ink">Technical specifications</h2>
+            <p class="mt-2 text-sm text-text-muted">
+              Dimensions and speeds are configured to the site. Values shown are typical for this model.
+            </p>
+            <SpecTable specs={specRows} class="mt-5" />
+
+            <h3 class="mt-8 font-display text-lg font-bold tracking-tight text-ink">Supply details</h3>
+            <SpecTable specs={commercialRows} class="mt-3" />
+          </div>
+
+          <div id="panel-features" role="tabpanel" aria-labelledby="tab-features" data-tab-panel class="hidden">
+            <div class="grid gap-8 md:grid-cols-2">
+              <div>
+                <h2 class="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-ink">
+                  <Icon name="gear" size={18} class="text-brand-500" />
+                  Features
+                </h2>
+                <ul class="mt-4 space-y-3">
+                  {data.features.map((feature) => (
+                    <li class="flex items-start gap-2.5 text-sm leading-relaxed text-text-muted">
+                      <Icon name="check" size={13} strokeWidth={2.4} class="mt-1 shrink-0 text-success-500" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h2 class="flex items-center gap-2 font-display text-lg font-bold tracking-tight text-ink">
+                  <Icon name="shield" size={18} class="text-brand-500" />
+                  Safety systems
+                </h2>
+                <ul class="mt-4 space-y-3">
+                  {data.safetyFeatures.map((feature) => (
+                    <li class="flex items-start gap-2.5 text-sm leading-relaxed text-text-muted">
+                      <Icon name="check" size={13} strokeWidth={2.4} class="mt-1 shrink-0 text-brand-500" />
+                      {feature}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-applications" role="tabpanel" aria-labelledby="tab-applications" data-tab-panel class="hidden">
+            <div class="grid gap-8 md:grid-cols-2">
+              <div>
+                <h2 class="font-display text-lg font-bold tracking-tight text-ink">Typical applications</h2>
+                <ul class="mt-4 space-y-2.5">
+                  {data.applications.map((application) => (
+                    <li class="flex items-start gap-2.5 text-sm leading-relaxed text-text-muted">
+                      <Icon name="arrow-right" size={13} class="mt-1 shrink-0 text-accent-500" />
+                      {application}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+
+              <div>
+                <h2 class="font-display text-lg font-bold tracking-tight text-ink">Industries served</h2>
+                <div class="mt-4 flex flex-wrap gap-2">
+                  {data.industries.map((industry) => (
+                    <Badge variant="muted" size="md">{industry}</Badge>
+                  ))}
+                </div>
+
+                {data.certifications.length > 0 && (
+                  <>
+                    <h3 class="mt-7 font-display text-base font-bold tracking-tight text-ink">Standards & certification</h3>
+                    <div class="mt-3 flex flex-wrap gap-2">
+                      {data.certifications.map((certification) => (
+                        <Badge variant="success">{certification}</Badge>
+                      ))}
+                    </div>
+                  </>
+                )}
+              </div>
+            </div>
+          </div>
+
+          <div id="panel-downloads" role="tabpanel" aria-labelledby="tab-downloads" data-tab-panel class="hidden">
+            <h2 class="font-display text-lg font-bold tracking-tight text-ink">Documentation</h2>
+            <p class="mt-2 text-sm text-text-muted">
+              Drawings and datasheets are issued against confirmed requirements so the document matches your site.
+            </p>
+
+            <div class="mt-5 grid gap-3 sm:grid-cols-2">
+              {[
+                {
+                  title: 'Technical datasheet',
+                  detail: 'Capacity, speeds, dimensions and scope of supply',
+                  action: data.datasheet ? 'Download PDF' : 'Request datasheet',
+                  href: data.datasheet ?? '#inquiry',
+                },
+                {
+                  title: 'General arrangement drawing',
+                  detail: 'Site-specific GA drawing after survey',
+                  action: 'Request drawing',
+                  href: '#inquiry',
+                },
+              ].map((document) => (
+                <a
+                  href={document.href}
+                  class="group flex flex-col rounded-lg border border-border bg-bg-muted p-4 transition-colors hover:border-brand-300 hover:bg-white"
+                >
+                  <span class="flex h-9 w-9 items-center justify-center rounded-md bg-white text-brand-500 shadow-sm">
+                    <Icon name="download" size={16} />
+                  </span>
+                  <span class="mt-3 text-sm font-semibold text-ink">{document.title}</span>
+                  <span class="mt-1 text-xs leading-relaxed text-text-muted">{document.detail}</span>
+                  <span class="mt-3 flex items-center gap-1.5 font-mono text-[10px] uppercase tracking-[0.1em] text-brand-500">
+                    {document.action}
+                    <Icon name="arrow-right" size={12} />
+                  </span>
+                </a>
+              ))}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div id="inquiry" class="lg:sticky lg:top-28">
+        <InquiryForm
+          productTitle={data.title}
+          productSku={data.sku}
+          title="Request a quote"
+          description="Send your span, lift height and site details. We will confirm the configuration and price within one working day."
+        />
+      </div>
+    </div>
+  </section>
+
+  {related.length > 0 && (
+    <Section eyebrow="Related equipment" title="Compare with other systems" description="Same engineering team, different configuration. These models are often specified alongside this one.">
+      <div class="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
+        {related.map((item, index) => (
+          <div data-reveal style={`transition-delay:${index * 50}ms`}>
+            <ProductCard product={item} class="h-full" />
+          </div>
+        ))}
+      </div>
+    </Section>
+  )}
+</Base>
+
+<script>
+  document.querySelectorAll<HTMLElement>('[data-tabs]').forEach((tabs) => {
+    const buttons = Array.from(tabs.querySelectorAll<HTMLButtonElement>('[data-tab]'));
+    const panels = Array.from(tabs.querySelectorAll<HTMLElement>('[data-tab-panel]'));
+
+    const activate = (index: number, focus = false) => {
+      buttons.forEach((button, i) => {
+        const active = i === index;
+        button.setAttribute('aria-selected', String(active));
+        button.tabIndex = active ? 0 : -1;
+        button.classList.toggle('border-brand-500', active);
+        button.classList.toggle('text-brand-500', active);
+        button.classList.toggle('border-transparent', !active);
+        button.classList.toggle('text-text-muted', !active);
+        if (active && focus) button.focus();
+      });
+
+      panels.forEach((panel, i) => panel.classList.toggle('hidden', i !== index));
+    };
+
+    buttons.forEach((button, index) => {
+      button.addEventListener('click', () => activate(index));
+      button.addEventListener('keydown', (event) => {
+        if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+        event.preventDefault();
+        const direction = event.key === 'ArrowRight' ? 1 : -1;
+        const next = (index + direction + buttons.length) % buttons.length;
+        activate(next, true);
+      });
+    });
+  });
+</script>

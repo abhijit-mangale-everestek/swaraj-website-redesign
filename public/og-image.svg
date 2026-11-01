@@ -1,0 +1,29 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#172554"/>
+      <stop offset="1" stop-color="#0F172A"/>
+    </linearGradient>
+    <pattern id="grid" width="48" height="48" patternUnits="userSpaceOnUse">
+      <path d="M48 0H0V48" fill="none" stroke="#ffffff" stroke-opacity="0.07"/>
+    </pattern>
+  </defs>
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#grid)"/>
+  <rect width="1200" height="10" fill="#FBBF24"/>
+  <g fill="none" stroke="#93C5FD" stroke-width="4" stroke-linecap="round" opacity="0.85">
+    <path d="M820 470h300"/>
+    <path d="M860 470V210"/>
+    <path d="M860 210l130 0"/>
+    <path d="M860 170l90 40"/>
+    <path d="M990 250v90"/>
+    <path d="M960 340h60l-8 18h-44z" fill="#FBBF24" stroke="none"/>
+  </g>
+  <g font-family="Verdana, sans-serif" fill="#ffffff">
+    <text x="80" y="210" font-size="22" letter-spacing="6" fill="#FBBF24">EST. 2007 · AMBERNATH</text>
+    <text x="80" y="310" font-size="74" font-weight="bold">SWARAJ</text>
+    <text x="80" y="370" font-size="34" letter-spacing="4" fill="#CBD5E1">ENGINEERING CORPORATION</text>
+    <text x="80" y="460" font-size="30" fill="#93C5FD">Heavy-duty cranes &amp; hoists</text>
+    <text x="80" y="510" font-size="24" fill="#94A3B8">EOT · Goliath · Jib · Wire rope hoists · Components</text>
+  </g>
+</svg>
